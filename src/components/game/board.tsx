@@ -8,6 +8,9 @@ import {
   Text,
   View,
 } from "react-native";
+import Square from "./square";
+import Timer from "./timer";
+
 
 // NOTE: requires `expo install expo-linear-gradient`
 // NOTE: `gap` in flexbox requires React Native 0.71+ / recent Expo SDK.
@@ -34,74 +37,26 @@ interface ConfettiPiece {
   progress: Animated.Value;
 }
 
-interface SquareProps {
-  value: string | null;
-  onSquareClick: () => void;
-  blast: BlastData | null;
-}
-
-function Square({ value, onSquareClick, blast }: SquareProps) {
-  const animatedStyle = blast
-    ? {
-        opacity: blast.progress.interpolate({
-          inputRange: [0, 1],
-          outputRange: [1, 0],
-        }),
-        transform: [
-          {
-            translateX: blast.progress.interpolate({
-              inputRange: [0, 0.15, 1],
-              outputRange: [0, 0, blast.dx],
-            }),
-          },
-          {
-            translateY: blast.progress.interpolate({
-              inputRange: [0, 0.15, 1],
-              outputRange: [0, 0, blast.dy],
-            }),
-          },
-          {
-            rotate: blast.progress.interpolate({
-              inputRange: [0, 1],
-              outputRange: ["0deg", `${blast.rot}deg`],
-            }),
-          },
-          {
-            scale: blast.progress.interpolate({
-              inputRange: [0, 0.15, 1],
-              outputRange: [1, 1.1, 0.4],
-            }),
-          },
-        ],
-      }
-    : {};
-
-  return (
-    <Pressable onPress={onSquareClick} disabled={!!value} hitSlop={4}>
-      <Animated.View style={[styles.square, animatedStyle]}>
-        <Text
-          style={[
-            styles.squareText,
-            value === "X" && styles.squareTextX,
-            value === "O" && styles.squareTextO,
-          ]}
-        >
-          {value}
-        </Text>
-      </Animated.View>
-    </Pressable>
-  );
-}
-
-function makeConfetti(): ConfettiPiece[] {
-  const colors = [
-    "#000000",
-    "#fb5607",
-    "#ff006e",
-    "#8338ec",
-    "#3a86ff",
+  const colorsWin = [
+    "#066f1b",
+    "#35b160",
+    "#33b950",
+    "#35ad75",
+    "#3ac261",
     "#06d6a0",
   ];
+
+  const colorsLose = [
+    "#dc3636",
+    "#fb5607",
+    "#ff006e",
+    "#dfd21e",
+    "#edbc29",
+    "#d77e25",
+  ];
+
+function makeConfetti(colorGrid:string[] = colorsLose): ConfettiPiece[] {
+
   return Array.from({ length: 60 }).map((_, i) => {
     const angle = Math.random() * Math.PI * 2;
     const distance = 160 + Math.random() * 220;
@@ -111,7 +66,7 @@ function makeConfetti(): ConfettiPiece[] {
       dx: Math.cos(angle) * distance,
       dy: Math.sin(angle) * distance - 60,
       rot: Math.random() * 900 - 450,
-      color: colors[i % colors.length],
+      color: colorGrid[i % colorGrid.length],
       size,
       shape: Math.random() > 0.5 ? size / 2 : 2,
       delay: Math.random() * 0.15,
@@ -122,14 +77,15 @@ function makeConfetti(): ConfettiPiece[] {
 }
 
 function makeSquareBlasts(): BlastData[] {
-  return Array.from({ length: 9 }).map((_, i) => {
-    const row = Math.floor(i / 3);
-    const col = i % 3;
+  return Array.from({ length: 16 }).map((_, i) => {
+    const row = Math.floor(i / 16);
+    const col = i % 16;
     const baseDx = (col - 1) * (140 + Math.random() * 60);
     const baseDy = (row - 1) * (140 + Math.random() * 60);
+    const neg = i%2 == 0 ? 1 : -1
     return {
-      dx: baseDx + (Math.random() * 40 - 20),
-      dy: baseDy + (Math.random() * 40 - 20),
+      dx: 0 ,//neg* (baseDx + (Math.random() * 40 - 20)),
+      dy: 0, //neg* (baseDy + (Math.random() * 40 - 20)),
       rot: Math.random() * 480 - 240,
       delay: Math.random() * 0.1,
       progress: new Animated.Value(0),
@@ -138,8 +94,11 @@ function makeSquareBlasts(): BlastData[] {
 }
 
 export default function Board() {
-  const [squares, setSquares] = useState<(string | null)[]>(
-    Array(9).fill(null)
+  console.log(Array(16).fill(0).map(()=>Math.floor(Math.random()*5)))
+  
+  const [squares, setSquares] = useState<(number | string | null)[]>(
+    Array(16).fill(0).map(()=>Math.floor(Math.random()*5))
+
   );
   const [exploding, setExploding] = useState(false);
   const [useConfetti, setUseConfetti] = useState(false);
@@ -196,6 +155,8 @@ export default function Board() {
   }
 
   function handleClick(i: number) {
+    console.log("CLICK")
+    console.log(squares[i])
     if (squares[i]) return;
     const next = squares.slice();
     next[i] = "X";
@@ -203,7 +164,7 @@ export default function Board() {
   }
 
   function handleReset() {
-    setSquares(Array(9).fill(null));
+    setSquares(Array(16).fill(null));
     setExploding(false);
     setUseConfetti(false);
     setBlasts([]);
@@ -212,7 +173,7 @@ export default function Board() {
 
   function handleExplode() {
     const nextBlasts = makeSquareBlasts();
-    const nextConfetti = makeConfetti();
+    const nextConfetti = makeConfetti(colorsLose);
     setBlasts(nextBlasts);
     setConfetti(nextConfetti);
     setExploding(true);
@@ -222,7 +183,7 @@ export default function Board() {
   }
 
   function handleConfetti() {
-    const nextConfetti = makeConfetti();
+    const nextConfetti = makeConfetti(colorsWin);
     setConfetti(nextConfetti);
     setUseConfetti(true);
     runConfettiAnimations(nextConfetti);
@@ -242,21 +203,24 @@ export default function Board() {
     // approximates the web version's radial background with a linear one.
     <LinearGradient colors={["#1e2749", "#10142b"]} style={styles.game}>
       <View style={styles.boardPanel}>
-        <Text style={styles.status}>You Win</Text>
-        <Animated.Text
+        <Text style={styles.status}>123456789</Text>
+        {/* <Animated.Text
           style={[
             styles.statusWin,
             { transform: [{ scale: pulseScale }], textShadowRadius: pulseGlow },
           ]}
         >
           You Win
+        </Animated.Text> */}
+        <Animated.Text>
+        <Timer/>
         </Animated.Text>
 
         <View style={styles.boardWrap}>
-          {[0, 1, 2].map((row) => (
+          {[0, 1, 2, 3].map((row) => (
             <View style={styles.boardRow} key={row}>
-              {[0, 1, 2].map((col) => {
-                const i = row * 3 + col;
+              {[0, 1, 2, 3].map((col) => {
+                const i = row * 4 + col;
                 return (
                   <Square
                     key={i}
@@ -369,7 +333,7 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   status: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: "700",
     color: "#e8eaf6",
     letterSpacing: 0.4,

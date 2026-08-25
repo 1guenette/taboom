@@ -1,7 +1,7 @@
 import { Platform, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import Board from '@/components/board';
+import Board from '@/components/game/board';
 
 import { ThemedView } from '@/components/themed-view';
 
