@@ -8,8 +8,10 @@ import {
   Text,
   View,
 } from "react-native";
+import { makeConfetti, makeSquareBlasts, runBlastAnimations, runConfettiAnimations } from "../graphics/blastStyle";
 import Square from "./square";
 import Timer from "./timer";
+
 
 
 // NOTE: requires `expo install expo-linear-gradient`
@@ -55,43 +57,6 @@ interface ConfettiPiece {
     "#d77e25",
   ];
 
-function makeConfetti(colorGrid:string[] = colorsLose): ConfettiPiece[] {
-
-  return Array.from({ length: 60 }).map((_, i) => {
-    const angle = Math.random() * Math.PI * 2;
-    const distance = 160 + Math.random() * 220;
-    const size = 5 + Math.random() * 9;
-    return {
-      id: i,
-      dx: Math.cos(angle) * distance,
-      dy: Math.sin(angle) * distance - 60,
-      rot: Math.random() * 900 - 450,
-      color: colorGrid[i % colorGrid.length],
-      size,
-      shape: Math.random() > 0.5 ? size / 2 : 2,
-      delay: Math.random() * 0.15,
-      duration: 0.9 + Math.random() * 0.6,
-      progress: new Animated.Value(0),
-    };
-  });
-}
-
-function makeSquareBlasts(): BlastData[] {
-  return Array.from({ length: 16 }).map((_, i) => {
-    const row = Math.floor(i / 16);
-    const col = i % 16;
-    const baseDx = (col - 1) * (140 + Math.random() * 60);
-    const baseDy = (row - 1) * (140 + Math.random() * 60);
-    const neg = i%2 == 0 ? 1 : -1
-    return {
-      dx: 0 ,//neg* (baseDx + (Math.random() * 40 - 20)),
-      dy: 0, //neg* (baseDy + (Math.random() * 40 - 20)),
-      rot: Math.random() * 480 - 240,
-      delay: Math.random() * 0.1,
-      progress: new Animated.Value(0),
-    };
-  });
-}
 
 export default function Board() {
   console.log(Array(16).fill(0).map(()=>Math.floor(Math.random()*5)))
@@ -128,31 +93,6 @@ export default function Board() {
     return () => loop.stop();
   }, [pulseAnim]);
 
-  function runBlastAnimations(nextBlasts: BlastData[]) {
-    const animations = nextBlasts.map((b) =>
-      Animated.timing(b.progress, {
-        toValue: 1,
-        duration: 800,
-        delay: b.delay * 1000,
-        easing: Easing.bezier(0.25, 0.8, 0.4, 1),
-        useNativeDriver: true,
-      })
-    );
-    Animated.parallel(animations).start();
-  }
-
-  function runConfettiAnimations(pieces: ConfettiPiece[]) {
-    const animations = pieces.map((p) =>
-      Animated.timing(p.progress, {
-        toValue: 1,
-        duration: p.duration * 1000,
-        delay: p.delay * 1000,
-        easing: Easing.out(Easing.ease),
-        useNativeDriver: true,
-      })
-    );
-    Animated.parallel(animations).start();
-  }
 
   function handleClick(i: number) {
     console.log("CLICK")

@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text
 } from "react-native";
+import { blastAnimation } from "../graphics/blastStyle";
 
 interface BlastData {
   dx: number;
@@ -21,40 +22,7 @@ interface SquareProps {
 }
 
 export default function Square({ value, onSquareClick, blast }: SquareProps) {
-  const animatedStyle = blast
-    ? {
-        opacity: blast.progress.interpolate({
-          inputRange: [0, 1],
-          outputRange: [1, 0],
-        }),
-        transform: [
-          {
-            translateX: blast.progress.interpolate({
-              inputRange: [0, 0.15, 1],
-              outputRange: [0, 0, blast.dx],
-            }),
-          },
-          {
-            translateY: blast.progress.interpolate({
-              inputRange: [0, 0.15, 1],
-              outputRange: [0, 0, blast.dy],
-            }),
-          },
-          {
-            rotate: blast.progress.interpolate({
-              inputRange: [0, 1],
-              outputRange: ["0deg", `${blast.rot}deg`],
-            }),
-          },
-          {
-            scale: blast.progress.interpolate({
-              inputRange: [0, 0.15, 1],
-              outputRange: [1, 1.1, 0.4],
-            }),
-          },
-        ],
-      }
-    : {};
+  const animatedStyle = blast ? blastAnimation(blast): {};
 
   return (
     <Pressable onPress={onSquareClick}  hitSlop={4}>
