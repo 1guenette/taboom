@@ -50,5 +50,6 @@ Level Variables:
    grid_number_switch: False,
    grid_color_switch: False,
    digit_color_switch: False,
-   color_levers: False
+   color_levers: False,
+   wrongReset: False
 }

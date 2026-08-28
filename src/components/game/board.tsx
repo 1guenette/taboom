@@ -40,11 +40,11 @@ interface ConfettiPiece {
 }
 
   const colorsWin = [
-    "#066f1b",
+    "#cb11e8",
     "#35b160",
-    "#33b950",
+    "#a033b9",
     "#35ad75",
-    "#3ac261",
+    "#8b3395",
     "#06d6a0",
   ];
 
@@ -59,12 +59,16 @@ interface ConfettiPiece {
 
 
 export default function Board() {
-  console.log(Array(16).fill(0).map(()=>Math.floor(Math.random()*5)))
-  
-  const [squares, setSquares] = useState<(number | string | null)[]>(
-    Array(16).fill(0).map(()=>Math.floor(Math.random()*5))
 
-  );
+  const [level, setLevel] = useState<number>(1)
+
+  const [gridLength, setGridLength] = useState<number>(16);
+  const [numberRange, setNumberRange] = useState<number>(10)
+  
+  const [combo, setCombo] = useState<number[]>([123456789])
+
+  const [squares, setSquares] = useState<(number | string | null)[]>(fillGrid(4, combo));
+
   const [exploding, setExploding] = useState(false);
   const [useConfetti, setUseConfetti] = useState(false);
   const [blasts, setBlasts] = useState<BlastData[]>([]);
@@ -94,9 +98,48 @@ export default function Board() {
   }, [pulseAnim]);
 
 
+  function fillGrid(rowSize: number, comboVal: number[]){
+    
+    let comboList = [...comboVal] //copy so you don't mutate state
+    let arr = Array(rowSize*rowSize).fill(0).map(()=>Math.floor(Math.random()*numberRange))
+    /**
+     * Add non-number graphics here
+     */
+    
+    let flagLoc: number[] = []
+    
+    //Fill grid with valid values
+    while(comboList.length !== 0){
+      let val = comboList.pop()!
+      let loc = Math.floor(Math.random()*rowSize*rowSize)
+      
+      let locExists = arr.indexOf(val)
+      if(!locExists){  
+        
+        //find valid location (that isn't already filled with valid value)
+        while(flagLoc.includes(loc)){
+          loc = Math.floor(Math.random()*rowSize*rowSize)
+        }
+        flagLoc.push(loc)
+        arr[loc] = val
+        
+      }
+      else{
+          flagLoc.push(locExists)
+      }
+
+    }
+
+    return arr
+  }
+
+  function displayCombo(){
+    return combo.join()
+  }
+  
+
+
   function handleClick(i: number) {
-    console.log("CLICK")
-    console.log(squares[i])
     if (squares[i]) return;
     const next = squares.slice();
     next[i] = "X";
@@ -104,7 +147,7 @@ export default function Board() {
   }
 
   function handleReset() {
-    setSquares(Array(16).fill(null));
+    setSquares(fillGrid(4, combo));
     setExploding(false);
     setUseConfetti(false);
     setBlasts([]);
@@ -143,7 +186,7 @@ export default function Board() {
     // approximates the web version's radial background with a linear one.
     <LinearGradient colors={["#1e2749", "#10142b"]} style={styles.game}>
       <View style={styles.boardPanel}>
-        <Text style={styles.status}>123456789</Text>
+        <Text style={styles.status}>{[displayCombo()]}</Text>
         {/* <Animated.Text
           style={[
             styles.statusWin,
@@ -153,7 +196,7 @@ export default function Board() {
           You Win
         </Animated.Text> */}
         <Animated.Text>
-        <Timer/>
+        <Timer onTimout={handleExplode}/>
         </Animated.Text>
 
         <View style={styles.boardWrap}>

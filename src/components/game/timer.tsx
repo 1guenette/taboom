@@ -1,5 +1,6 @@
 import Countdown from "react-countdown";
 // Random component
+import { useMemo, useState } from "react";
 import {
   Animated,
 
@@ -7,23 +8,25 @@ import {
   Text,
 } from "react-native";
 
+interface TimerProps{
+  onTimout: () => void;
+}
 
+export default function Timer({ onTimout }: TimerProps) {
 
-export default function Timer() {
+   const targetDate = useMemo(() => Date.now() + 5000, []);
+   const [displayTimout, setDisplayTimeout] = useState<boolean>(false)
+   
+    
+   function handleTimout(){
+      setDisplayTimeout(true)
+      onTimout()
+    }
 
     function renderer({ hours, minutes, seconds, completed }) {
-        if (completed) {
+      if (completed) {
             // Render a complete state
-            return (
-                <span>
-                 <Animated.Text>
-                    <Text style={styles.status}>
-                    Times Up
-                    </Text>
-                 </Animated.Text>
-                 
-                 </span>
-            );
+            return null
         } else {
             // Render a countdown
             return (
@@ -40,7 +43,19 @@ export default function Timer() {
     };
 
 
-    return(<Countdown date={Date.now() + 5000} renderer={renderer} />)
+    return(<>
+            <span hidden={!displayTimout}>
+                 <Animated.Text>
+                    <Text style={styles.status}>
+                    Times Up
+                    </Text>
+                 </Animated.Text>
+                 
+                 </span>
+            <span hidden={displayTimout}>
+            <Countdown date={targetDate} renderer={renderer} onComplete={()=>{handleTimout()}}/>
+              </span>
+          </>)
     
 
 }
