@@ -74,7 +74,8 @@ export default function Board() {
   const [level, setLevel] = useState<number>(1)
   const [gridLength, setGridLength] = useState<number>(4)
   const [numberRange, setNumberRange] = useState<number>(10)
-  const [combo, setCombo] = useState<number[]>([1,2,3])
+  const [levelCombo, setLevelCombo] = useState<number[]>([1,2,3])
+  const [combo, setCombo] = useState<number[]>(levelCombo)
   const [squares, setSquares] = useState<(number | string | null)[]>(()=>fillGrid(gridLength, combo));
   const [duration, setDuration] = useState<number>(10000)
   const [started, setStarted] = useState<boolean>(true) //Needed? Delete later
@@ -187,6 +188,7 @@ export default function Board() {
     setDuration(duration)
     timerRef.current?.resetTimer()
     setStarted(true)
+    setCombo(levelCombo)
   }
 
   function handleExplode() {
