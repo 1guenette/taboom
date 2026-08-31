@@ -28,7 +28,7 @@ export default function Square({ value, onSquareClick, blast }: SquareProps) {
     <Pressable onPress={onSquareClick}  hitSlop={4}>
       <Animated.View style={[styles.square, animatedStyle]}>
         <Text
-          style={[styles.squareText, value === "X" && styles.squareTextX, value === "O" && styles.squareTextO,]}
+          style={styles.squareText}
         >
           {value}
         </Text>

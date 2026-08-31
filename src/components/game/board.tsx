@@ -62,7 +62,6 @@ interface ConfettiPiece {
 export default function Board() {
 
 
-  const [gridLength, setGridLength] = useState<number>(16);
   
   //Explosion graphics variables
   const [exploding, setExploding] = useState(false);
@@ -73,12 +72,16 @@ export default function Board() {
 
   //Game session tracking
   const [level, setLevel] = useState<number>(1)
+  const [gridLength, setGridLength] = useState<number>(4)
   const [numberRange, setNumberRange] = useState<number>(10)
-  const [combo, setCombo] = useState<number[]>([1,2,3,4,5,6,7,8,9])
-  const [squares, setSquares] = useState<(number | string | null)[]>(fillGrid(4, combo));
+  const [combo, setCombo] = useState<number[]>([1,2,3])
+  const [squares, setSquares] = useState<(number | string | null)[]>(()=>fillGrid(gridLength, combo));
   const [duration, setDuration] = useState<number>(10000)
-  const [started, setStarted] = useState<boolean>(true)
+  const [started, setStarted] = useState<boolean>(true) //Needed? Delete later
+  const  [resetOnClick, setResetOnClick] = useState<boolean>(true)
+
   const timerRef = useRef(null)  //Tracks timer component
+  
 
 
   // Replaces the CSS `status-pulse` keyframe animation.
@@ -105,7 +108,6 @@ export default function Board() {
 
 
   function fillGrid(rowSize: number, comboVal: number[]){
-    
     
     let comboList = [...comboVal] //copy so you don't mutate state
     console.log("XXXXX")
@@ -148,23 +150,36 @@ export default function Board() {
   
 
 
-  function handleSquareClick(i: number | string | null) {
-    console.log(i)
-    console.log(combo)
-    if (combo.length > 0){
 
+  function handleSquareClick(i) {
+  if (combo.length > 0) {
+    if (i === combo[0]) {
+      const update = combo.slice(1)
+      setCombo(update)
+      if (update.length === 0) {
+        handleConfetti()
+      } 
+      else {
+        if (resetOnClick){
+          timerRef.current?.resetTimer()
+        }
+      }
     }
-    else{
-      handleConfetti()
-    }
-    // if (squares[i]) return;
-    // const next = squares.slice();
-    // next[i] = "X";
-    // setSquares(next);
   }
+}
+
+  // const handleSquareClick = useCallback((i: number | string | null) => {
+  //   setCombo(prev => {
+  //     if (prev.length === 0 || i !== prev[0]) return prev; // no state churn on wrong click
+  //     const update = prev.slice(1);
+  //     if (update.length === 0) handleConfetti();
+  //     return update;
+  //   });
+  // }, []);
+
 
   function handleReset() {
-    setSquares(fillGrid(4, combo));
+    setSquares(fillGrid(gridLength, combo));
     setExploding(false);
     setUseConfetti(false);
     setBlasts([]);
@@ -192,6 +207,8 @@ export default function Board() {
     setConfetti(nextConfetti);
     setUseConfetti(true);
     runConfettiAnimations(nextConfetti);
+    timerRef.current?.stopTimer()
+    setStarted(false)
   }
 
   const pulseScale = pulseAnim.interpolate({

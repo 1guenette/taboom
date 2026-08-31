@@ -1,7 +1,9 @@
 Add fill grid logic per-press
+Reset timer on-click boolean
 Win Logic
 Grid Mining conditional
-Grid color switch logic
+Grid box-color switch logic
+Grid number-color switch logic
 Grid Number switch conditional
 Level Logic
 Points logic

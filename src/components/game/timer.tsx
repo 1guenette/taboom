@@ -1,9 +1,8 @@
-import Countdown, { CountdownApi } from "react-countdown";
+import Countdown from "react-countdown";
 // Random component
-import { useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import {
   Animated,
-
   StyleSheet,
   Text,
 } from "react-native";
@@ -16,30 +15,37 @@ interface TimerProps{
 }
 
 export default function Timer({ onTimout, pause, ref, duration }: TimerProps) {
+  console.log("ref inside Timer:", ref);
 
   const [key, setKey] = useState<number>(0) 
   const targetDate = useMemo(() => Date.now() + duration, [key]);
    const [displayTimout, setDisplayTimeout] = useState<boolean>(false)
    const timerRef = useRef<Countdown>(null)
    
-    
-   function handleTimout(){
-      setDisplayTimeout(true)
-      onTimout()
-    }
+
+
+  const handleTimout = useCallback(() => {
+    setDisplayTimeout(true);
+    onTimout();
+  }, []);
 
     useImperativeHandle(ref, ()=>({
       pauseGame(){
-        if (timerRef.current?.isPaused()){
-          timerRef.current?.start()
+        const api = timerRef.current?.getApi();
+        if (!api) return;
+        if (api.isPaused()){
+          api.start()
         } 
         else{
-           timerRef.current?.pause()
+          api.pause()
         }  
       },
       stopTimer(){
-        timerRef.current?.stop()
-        setDisplayTimeout(true)
+        console.log("STOP")
+        const api = timerRef.current?.getApi();
+        if (!api) return;
+        api.pause()
+        //setDisplayTimeout(true)
 
       },
       
@@ -49,19 +55,19 @@ export default function Timer({ onTimout, pause, ref, duration }: TimerProps) {
         setKey(key=>key+1)
       }
 
-    }))
+    }), [])
 
 
-    useEffect(() => {
-      const api: CountdownApi | undefined = timerRef.current?.getApi();
-      if (!api) return;
+    // useEffect(() => {
+    //   const api: CountdownApi | undefined = timerRef.current?.getApi();
+    //   if (!api) return;
 
-      if (pause) {
-        api.pause();
-      } else {
-        api.start();
-      }
-    }, [pause]);
+    //   if (pause) {
+    //     api.pause();
+    //   } else {
+    //     api.start();
+    //   }
+    // }, []);
 
 
 
@@ -69,10 +75,12 @@ export default function Timer({ onTimout, pause, ref, duration }: TimerProps) {
       //api.pause()
       let { hours, minutes, seconds } = formatted
       
-      if (api.completed) {
+      if (api.completed) 
+        {
             // Render a complete state
             return null
-        } else {
+        } 
+        else {
             // Render a countdown
             return (
                 <span>
