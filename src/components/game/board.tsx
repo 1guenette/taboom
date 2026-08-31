@@ -1,5 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useRef, useState } from "react";
+
 import {
   Animated,
   Easing,
@@ -73,7 +74,7 @@ export default function Board() {
   //Game session tracking
   const [level, setLevel] = useState<number>(1)
   const [numberRange, setNumberRange] = useState<number>(10)
-  const [combo, setCombo] = useState<number[]>([123456789])
+  const [combo, setCombo] = useState<number[]>([1,2,3,4,5,6,7,8,9])
   const [squares, setSquares] = useState<(number | string | null)[]>(fillGrid(4, combo));
   const [duration, setDuration] = useState<number>(10000)
   const [started, setStarted] = useState<boolean>(true)
@@ -105,7 +106,10 @@ export default function Board() {
 
   function fillGrid(rowSize: number, comboVal: number[]){
     
+    
     let comboList = [...comboVal] //copy so you don't mutate state
+    console.log("XXXXX")
+    console.log(comboList)
     let arr = Array(rowSize*rowSize).fill(0).map(()=>Math.floor(Math.random()*numberRange))
     
     /**
@@ -120,7 +124,7 @@ export default function Board() {
       let loc = Math.floor(Math.random()*rowSize*rowSize)
       
       let locExists = arr.indexOf(val)
-      if(!locExists){  
+      if(locExists === -1){  
         
         //find valid location (that isn't already filled with valid value)
         while(flagLoc.includes(loc)){
@@ -139,16 +143,24 @@ export default function Board() {
   }
 
   function displayCombo(){
-    return combo.join()
+    return combo.join("")
   }
   
 
 
-  function handleClick(i: number) {
-    if (squares[i]) return;
-    const next = squares.slice();
-    next[i] = "X";
-    setSquares(next);
+  function handleSquareClick(i: number | string | null) {
+    console.log(i)
+    console.log(combo)
+    if (combo.length > 0){
+
+    }
+    else{
+      handleConfetti()
+    }
+    // if (squares[i]) return;
+    // const next = squares.slice();
+    // next[i] = "X";
+    // setSquares(next);
   }
 
   function handleReset() {
@@ -218,7 +230,7 @@ export default function Board() {
                   <Square
                     key={i}
                     value={squares[i]}
-                    onSquareClick={() => handleClick(i)}
+                    onSquareClick={() => handleSquareClick(squares[i])}
                     blast={exploding ? blasts[i] : null}
                   />
                 );
