@@ -60,20 +60,25 @@ interface ConfettiPiece {
 
 export default function Board() {
 
-  const [level, setLevel] = useState<number>(1)
 
   const [gridLength, setGridLength] = useState<number>(16);
-  const [numberRange, setNumberRange] = useState<number>(10)
   
-  const [combo, setCombo] = useState<number[]>([123456789])
-
-  const [squares, setSquares] = useState<(number | string | null)[]>(fillGrid(4, combo));
-
+  //Explosion graphics variables
   const [exploding, setExploding] = useState(false);
   const [useConfetti, setUseConfetti] = useState(false);
   const [blasts, setBlasts] = useState<BlastData[]>([]);
   const [confetti, setConfetti] = useState<ConfettiPiece[]>([]);
   const pulseAnim = useRef(new Animated.Value(0)).current;
+
+  //Game session tracking
+  const [level, setLevel] = useState<number>(1)
+  const [numberRange, setNumberRange] = useState<number>(10)
+  const [combo, setCombo] = useState<number[]>([123456789])
+  const [squares, setSquares] = useState<(number | string | null)[]>(fillGrid(4, combo));
+  const [duration, setDuration] = useState<number>(10000)
+  const [started, setStarted] = useState<boolean>(true)
+  const timerRef = useRef(null)  //Tracks timer component
+
 
   // Replaces the CSS `status-pulse` keyframe animation.
   useEffect(() => {
@@ -102,8 +107,9 @@ export default function Board() {
     
     let comboList = [...comboVal] //copy so you don't mutate state
     let arr = Array(rowSize*rowSize).fill(0).map(()=>Math.floor(Math.random()*numberRange))
+    
     /**
-     * Add non-number graphics here
+     * TODO: Add non-number graphics here
      */
     
     let flagLoc: number[] = []
@@ -127,7 +133,6 @@ export default function Board() {
       else{
           flagLoc.push(locExists)
       }
-
     }
 
     return arr
@@ -152,6 +157,9 @@ export default function Board() {
     setUseConfetti(false);
     setBlasts([]);
     setConfetti([]);
+    setDuration(duration)
+    timerRef.current?.resetTimer()
+    setStarted(true)
   }
 
   function handleExplode() {
@@ -163,6 +171,8 @@ export default function Board() {
     setUseConfetti(true);
     runBlastAnimations(nextBlasts);
     runConfettiAnimations(nextConfetti);
+    timerRef.current?.stopTimer()
+    setStarted(false)
   }
 
   function handleConfetti() {
@@ -196,7 +206,7 @@ export default function Board() {
           You Win
         </Animated.Text> */}
         <Animated.Text>
-        <Timer onTimout={handleExplode}/>
+        <Timer onTimout={handleExplode} pause={false} ref={timerRef} duration={duration}/>
         </Animated.Text>
 
         <View style={styles.boardWrap}>
@@ -294,6 +304,16 @@ export default function Board() {
             ]}
           >
             <Text style={styles.resetButtonText}>Confetti</Text>
+          </Pressable>
+
+          <Pressable
+            onPress={()=>{timerRef.current?.pauseGame()}}
+            style={({ pressed }) => [
+              styles.resetButton,
+              pressed && styles.resetButtonPressed,
+            ]}
+          >
+            <Text style={styles.resetButtonText}>Pause</Text>
           </Pressable>
         </View>
       </View>

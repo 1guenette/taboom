@@ -1,6 +1,6 @@
-import Countdown from "react-countdown";
+import Countdown, { CountdownApi } from "react-countdown";
 // Random component
-import { useMemo, useState } from "react";
+import { useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import {
   Animated,
 
@@ -10,12 +10,17 @@ import {
 
 interface TimerProps{
   onTimout: () => void;
+  pause: boolean;
+  ref: any;
+  duration: number;
 }
 
-export default function Timer({ onTimout }: TimerProps) {
+export default function Timer({ onTimout, pause, ref, duration }: TimerProps) {
 
-   const targetDate = useMemo(() => Date.now() + 5000, []);
+  const [key, setKey] = useState<number>(0) 
+  const targetDate = useMemo(() => Date.now() + duration, [key]);
    const [displayTimout, setDisplayTimeout] = useState<boolean>(false)
+   const timerRef = useRef<Countdown>(null)
    
     
    function handleTimout(){
@@ -23,8 +28,48 @@ export default function Timer({ onTimout }: TimerProps) {
       onTimout()
     }
 
-    function renderer({ hours, minutes, seconds, completed }) {
-      if (completed) {
+    useImperativeHandle(ref, ()=>({
+      pauseGame(){
+        if (timerRef.current?.isPaused()){
+          timerRef.current?.start()
+        } 
+        else{
+           timerRef.current?.pause()
+        }  
+      },
+      stopTimer(){
+        timerRef.current?.stop()
+        setDisplayTimeout(true)
+
+      },
+      
+      resetTimer(){
+        console.log("reset")
+        setDisplayTimeout(false)
+        setKey(key=>key+1)
+      }
+
+    }))
+
+
+    useEffect(() => {
+      const api: CountdownApi | undefined = timerRef.current?.getApi();
+      if (!api) return;
+
+      if (pause) {
+        api.pause();
+      } else {
+        api.start();
+      }
+    }, [pause]);
+
+
+
+    function renderer({api, formatted}) {
+      //api.pause()
+      let { hours, minutes, seconds } = formatted
+      
+      if (api.completed) {
             // Render a complete state
             return null
         } else {
@@ -47,13 +92,13 @@ export default function Timer({ onTimout }: TimerProps) {
             <span hidden={!displayTimout}>
                  <Animated.Text>
                     <Text style={styles.status}>
-                    Times Up
+                    Game Over
                     </Text>
                  </Animated.Text>
                  
                  </span>
             <span hidden={displayTimout}>
-            <Countdown date={targetDate} renderer={renderer} onComplete={()=>{handleTimout()}}/>
+            <Countdown date={targetDate} renderer={renderer} onComplete={()=>{handleTimout()}} controlled={false} ref={timerRef} key={key}/>
               </span>
           </>)
     
