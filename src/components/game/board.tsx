@@ -79,7 +79,8 @@ export default function Board() {
   const [squares, setSquares] = useState<(number | string | null)[]>(()=>fillGrid(gridLength, combo));
   const [duration, setDuration] = useState<number>(10000)
   const [started, setStarted] = useState<boolean>(true) //Needed? Delete later
-  const  [resetOnClick, setResetOnClick] = useState<boolean>(true)
+  const [resetOnClick, setResetOnClick] = useState<boolean>(true)
+  const [refillGrid, setRefillGrid] = useState<boolean>(true)
 
   const timerRef = useRef(null)  //Tracks timer component
   
@@ -157,13 +158,20 @@ export default function Board() {
     if (i === combo[0]) {
       const update = combo.slice(1)
       setCombo(update)
-      if (update.length === 0) {
+      
+      if (update.length === 0) { //win game conditional
         handleConfetti()
       } 
       else {
+        
         if (resetOnClick){
           timerRef.current?.resetTimer()
         }
+
+        if(refillGrid == true){
+          setSquares(fillGrid(numberRange, update))
+        }
+
       }
     }
   }
@@ -316,9 +324,9 @@ export default function Board() {
               pressed && styles.resetButtonPressed,
             ]}
           >
-            <Text style={styles.resetButtonText}>Reset</Text>
+            <Text style={styles.resetButtonText}>Try Again</Text>
           </Pressable>
-          <Pressable
+          {/* <Pressable
             onPress={handleExplode}
             style={({ pressed }) => [
               styles.resetButton,
@@ -345,7 +353,7 @@ export default function Board() {
             ]}
           >
             <Text style={styles.resetButtonText}>Pause</Text>
-          </Pressable>
+          </Pressable> */}
         </View>
       </View>
     </LinearGradient>
