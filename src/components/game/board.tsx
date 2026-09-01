@@ -197,7 +197,7 @@ export default function Board() {
     timerRef.current?.resetTimer()
     setStarted(true)
     setCombo(levelCombo)
-    setSquares(fillGrid(gridLength, combo));
+    setSquares(fillGrid(gridLength, levelCombo));
   }
 
   function handleExplode() {
