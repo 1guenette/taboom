@@ -59,6 +59,22 @@ interface ConfettiPiece {
   ];
 
 
+  const buttonColors = [
+    "#dc3636",
+    "#fb5607",
+    "#ff006e",
+    "#dfd21e",
+    "#0f8d37",
+    "#1207e0",
+    "#8b3395",
+  ];
+  
+
+  const wildCards = {
+    bomb: "BOMB",
+    extension: "EXT",
+  }
+
 export default function Board() {
 
 
@@ -77,6 +93,7 @@ export default function Board() {
   const [levelCombo, setLevelCombo] = useState<number[]>([1,2,3])
   const [combo, setCombo] = useState<number[]>(levelCombo)
   const [squares, setSquares] = useState<(number | string | null)[]>(()=>fillGrid(gridLength, combo));
+  const [levelWin, setLevelWin] = useState<boolean>(false)
   
   const [started, setStarted] = useState<boolean>(true) //Needed? Delete later
   
@@ -191,7 +208,7 @@ export default function Board() {
 
 
   function handleReset() {
-    
+    setLevelWin(false)
     setExploding(false);
     setUseConfetti(false);
     setBlasts([]);
@@ -218,6 +235,7 @@ export default function Board() {
 
   function handleConfetti() {
     const nextConfetti = makeConfetti(colorsWin);
+    setLevelWin(true)
     setConfetti(nextConfetti);
     setUseConfetti(true);
     runConfettiAnimations(nextConfetti);
@@ -248,9 +266,28 @@ export default function Board() {
         >
           You Win
         </Animated.Text> */}
-        <Animated.Text>
+        <span hidden={exploding || levelWin}>
+        <Animated.Text >
         <Timer onTimout={handleExplode} pause={false} ref={timerRef} duration={duration}/>
         </Animated.Text>
+        </span>
+
+        <span hidden={!exploding}>
+                 <Animated.Text>
+                    <Text style={styles.status}>
+                    Game Over
+                    </Text>
+                 </Animated.Text>
+                 
+        </span>
+        <span hidden={!levelWin}>
+                 <Animated.Text>
+                    <Text style={styles.status}>
+                    You Win!
+                    </Text>
+                 </Animated.Text>
+                 
+        </span>
 
         <View style={styles.boardWrap}>
           {[0, 1, 2, 3].map((row) => (

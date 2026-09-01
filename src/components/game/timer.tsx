@@ -18,8 +18,8 @@ export default function Timer({ onTimout, pause, ref, duration }: TimerProps) {
 
   const [key, setKey] = useState<number>(0) 
   const targetDate = useMemo(() => Date.now() + duration, [key]);
-   const [displayTimout, setDisplayTimeout] = useState<boolean>(false)
-   const timerRef = useRef<Countdown>(null)
+  const [displayTimout, setDisplayTimeout] = useState<boolean>(false)
+  const timerRef = useRef<Countdown>(null)
    
 
 
@@ -94,14 +94,14 @@ export default function Timer({ onTimout, pause, ref, duration }: TimerProps) {
 
 
     return(<>
-            <span hidden={!displayTimout}>
+            {/* <span hidden={!displayTimout}>
                  <Animated.Text>
                     <Text style={styles.status}>
                     Game Over
                     </Text>
                  </Animated.Text>
                  
-                 </span>
+            </span> */}
             <span hidden={displayTimout}>
             <Countdown date={targetDate} renderer={renderer} onComplete={()=>{handleTimout()}} controlled={false} ref={timerRef} key={key}/>
               </span>
