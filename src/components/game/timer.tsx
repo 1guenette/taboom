@@ -15,7 +15,6 @@ interface TimerProps{
 }
 
 export default function Timer({ onTimout, pause, ref, duration }: TimerProps) {
-  console.log("ref inside Timer:", ref);
 
   const [key, setKey] = useState<number>(0) 
   const targetDate = useMemo(() => Date.now() + duration, [key]);
@@ -41,7 +40,6 @@ export default function Timer({ onTimout, pause, ref, duration }: TimerProps) {
         }  
       },
       stopTimer(){
-        console.log("STOP")
         const api = timerRef.current?.getApi();
         if (!api) return;
         api.pause()
@@ -50,7 +48,6 @@ export default function Timer({ onTimout, pause, ref, duration }: TimerProps) {
       },
       
       resetTimer(){
-        console.log("reset")
         setDisplayTimeout(false)
         setKey(key=>key+1)
       }

@@ -124,7 +124,7 @@ export default function Board() {
     
     //Fill grid with valid values
     while(comboList.length !== 0){
-      let val = comboList.pop()!
+      let val = comboList.shift()!
       let loc = Math.floor(Math.random()*rowSize*rowSize)
       
       let locExists = arr.indexOf(val)
@@ -169,7 +169,7 @@ export default function Board() {
         }
 
         if(refillGrid == true){
-          setSquares(fillGrid(numberRange, update))
+          setSquares(fillGrid(gridLength, update))
         }
 
       }
@@ -188,7 +188,7 @@ export default function Board() {
 
 
   function handleReset() {
-    setSquares(fillGrid(gridLength, combo));
+    
     setExploding(false);
     setUseConfetti(false);
     setBlasts([]);
@@ -197,6 +197,7 @@ export default function Board() {
     timerRef.current?.resetTimer()
     setStarted(true)
     setCombo(levelCombo)
+    setSquares(fillGrid(gridLength, combo));
   }
 
   function handleExplode() {
@@ -324,9 +325,9 @@ export default function Board() {
               pressed && styles.resetButtonPressed,
             ]}
           >
-            <Text style={styles.resetButtonText}>Try Again</Text>
+            <Text style={styles.resetButtonText}>Replay</Text>
           </Pressable>
-          {/* <Pressable
+          <Pressable
             onPress={handleExplode}
             style={({ pressed }) => [
               styles.resetButton,
@@ -353,7 +354,7 @@ export default function Board() {
             ]}
           >
             <Text style={styles.resetButtonText}>Pause</Text>
-          </Pressable> */}
+          </Pressable>
         </View>
       </View>
     </LinearGradient>
