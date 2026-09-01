@@ -77,9 +77,12 @@ export default function Board() {
   const [levelCombo, setLevelCombo] = useState<number[]>([1,2,3])
   const [combo, setCombo] = useState<number[]>(levelCombo)
   const [squares, setSquares] = useState<(number | string | null)[]>(()=>fillGrid(gridLength, combo));
-  const [duration, setDuration] = useState<number>(10000)
+  
   const [started, setStarted] = useState<boolean>(true) //Needed? Delete later
-  const [resetOnClick, setResetOnClick] = useState<boolean>(false)
+  
+  //Difficulty settings
+  const [duration, setDuration] = useState<number>(10000)
+  const [resetOnClick, setResetOnClick] = useState<boolean>(true)
   const [refillGrid, setRefillGrid] = useState<boolean>(true)
 
   const timerRef = useRef(null)  //Tracks timer component
