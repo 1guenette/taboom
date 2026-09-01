@@ -79,7 +79,7 @@ export default function Board() {
   const [squares, setSquares] = useState<(number | string | null)[]>(()=>fillGrid(gridLength, combo));
   const [duration, setDuration] = useState<number>(10000)
   const [started, setStarted] = useState<boolean>(true) //Needed? Delete later
-  const [resetOnClick, setResetOnClick] = useState<boolean>(true)
+  const [resetOnClick, setResetOnClick] = useState<boolean>(false)
   const [refillGrid, setRefillGrid] = useState<boolean>(true)
 
   const timerRef = useRef(null)  //Tracks timer component
