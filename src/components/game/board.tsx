@@ -40,6 +40,11 @@ interface ConfettiPiece {
   progress: Animated.Value;
 }
 
+interface BoxEntry {
+  number: number,
+  color?: number
+}
+
   const colorsWin = [
     "#cb11e8",
     "#35b160",
@@ -59,7 +64,7 @@ interface ConfettiPiece {
   ];
 
 
-  const buttonColors = [
+  const BUTTON_COLORS = [
     "#dc3636",
     "#fb5607",
     "#ff006e",
@@ -90,9 +95,12 @@ export default function Board() {
   const [level, setLevel] = useState<number>(1)
   const [gridLength, setGridLength] = useState<number>(4)
   const [numberRange, setNumberRange] = useState<number>(10)
-  const [levelCombo, setLevelCombo] = useState<number[]>([1,2,3])
-  const [combo, setCombo] = useState<number[]>(levelCombo)
-  const [squares, setSquares] = useState<(number | string | null)[]>(()=>fillGrid(gridLength, combo));
+  
+  //Grid
+  const [levelCombo, setLevelCombo] = useState<BoxEntry[]>([{number: 1},{number: 2},{number: 3}])
+  const [combo, setCombo] = useState<BoxEntry[]>(levelCombo)
+  const [squares, setSquares] = useState<BoxEntry[]>(()=>fillGrid(gridLength, combo));
+  
   const [levelWin, setLevelWin] = useState<boolean>(false)
   
   const [started, setStarted] = useState<boolean>(true) //Needed? Delete later
@@ -101,6 +109,7 @@ export default function Board() {
   const [duration, setDuration] = useState<number>(10000)
   const [resetOnClick, setResetOnClick] = useState<boolean>(true)
   const [refillGrid, setRefillGrid] = useState<boolean>(true)
+  const [colorBox, setColorBox] = useState<boolean>(true)
 
   const timerRef = useRef(null)  //Tracks timer component
   
@@ -129,25 +138,33 @@ export default function Board() {
   }, [pulseAnim]);
 
 
-  function fillGrid(rowSize: number, comboVal: number[]){
+  function fillGrid(rowSize: number, comboVal: BoxEntry[]){
     
     let comboList = [...comboVal] //copy so you don't mutate state
     console.log("XXXXX")
     console.log(comboList)
-    let arr = Array(rowSize*rowSize).fill(0).map(()=>Math.floor(Math.random()*numberRange))
+    let arr: BoxEntry[] = Array(rowSize*rowSize).fill(0).map(()=>{
+        return {
+          number: Math.floor(Math.random()*numberRange),
+          color: Math.floor(Math.random()* BUTTON_COLORS.length)
+        }
+    })
     
     /**
      * TODO: Add non-number graphics here
      */
+
+    //----------------------------------------
+
     
     let flagLoc: number[] = []
     
     //Fill grid with valid values
     while(comboList.length !== 0){
-      let val = comboList.shift()!
-      let loc = Math.floor(Math.random()*rowSize*rowSize)
+      let val:BoxEntry = comboList.shift()!
+      let loc: number = Math.floor(Math.random()*rowSize*rowSize)
       
-      let locExists = arr.indexOf(val)
+      let locExists = arr.findIndex(n=>n.number === val.number)
       if(locExists === -1){  
         
         //find valid location (that isn't already filled with valid value)
@@ -167,15 +184,15 @@ export default function Board() {
   }
 
   function displayCombo(){
-    return combo.join("")
+    return combo.map(v=>v.number).join("")
   }
   
 
 
 
-  function handleSquareClick(i) {
+  function handleSquareClick(i: BoxEntry) {
   if (combo.length > 0) {
-    if (i === combo[0]) {
+    if (i.number === combo[0].number) {
       const update = combo.slice(1)
       setCombo(update)
       
@@ -223,6 +240,7 @@ export default function Board() {
   function handleExplode() {
     const nextBlasts = makeSquareBlasts();
     const nextConfetti = makeConfetti(colorsLose);
+    setLevelWin(false)
     setBlasts(nextBlasts);
     setConfetti(nextConfetti);
     setExploding(true);
@@ -300,6 +318,7 @@ export default function Board() {
                     value={squares[i]}
                     onSquareClick={() => handleSquareClick(squares[i])}
                     blast={exploding ? blasts[i] : null}
+                    colorEnabled={colorBox}
                   />
                 );
               })}

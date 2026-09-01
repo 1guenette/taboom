@@ -15,22 +15,46 @@ interface BlastData {
   progress: Animated.Value;
 }
 
-interface SquareProps {
-  value: string | number | null;
-  onSquareClick: () => void;
-  blast: BlastData | null;
+interface BoxEntry { //TODO: unify type with parent
+  number: number,
+  color?: number
 }
 
-export default function Square({ value, onSquareClick, blast }: SquareProps) {
+interface SquareProps {
+  value: BoxEntry;
+  onSquareClick: () => void;
+  blast: BlastData | null;
+  colorEnabled: boolean;
+}
+
+
+  const BUTTON_COLORS = [
+    "#dc3636",
+    "#fb5607",
+    "#ff006e",
+    "#dfd21e",
+    "#0f8d37",
+    "#1207e0",
+    "#8b3395",
+  ];
+  
+export default function Square({ value, onSquareClick, blast, colorEnabled }: SquareProps) {
   const animatedStyle = blast ? blastAnimation(blast): {};
 
   return (
     <Pressable onPress={onSquareClick}  hitSlop={4}>
-      <Animated.View style={[styles.square, animatedStyle]}>
+      <Animated.View style={[
+          
+          styles.square, animatedStyle, 
+{ backgroundColor: colorEnabled ? BUTTON_COLORS[value.color] : "#f4f6fb"}, //TODO: find better approach
+        ]}>
         <Text
-          style={styles.squareText}
+          style={[
+            styles.squareText, 
+            //{color: 'red'}
+          ]}
         >
-          {value}
+          {value.number}
         </Text>
       </Animated.View>
     </Pressable>
