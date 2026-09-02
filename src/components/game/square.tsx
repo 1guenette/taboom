@@ -1,4 +1,3 @@
-
 import {
   Animated,
   Pressable,
@@ -28,35 +27,39 @@ interface SquareProps {
 }
 
 
-  const BUTTON_COLORS = [
-    "#dc3636",
-    "#fb5607",
-    "#ff006e",
-    "#dfd21e",
-    "#0f8d37",
-    "#1207e0",
-    "#8b3395",
-  ];
-  
+const BUTTON_COLORS = [
+  "#dc3636",
+  "#fb5607",
+  "#ff006e",
+  "#dfd21e",
+  "#0f8d37",
+  "#1207e0",
+  "#8b3395",
+];
+
 export default function Square({ value, onSquareClick, blast, colorEnabled }: SquareProps) {
-  const animatedStyle = blast ? blastAnimation(blast): {};
+  const animatedStyle = blast ? blastAnimation(blast) : {};
 
   return (
-    <Pressable onPress={onSquareClick}  hitSlop={4}>
-      <Animated.View style={[
-          
-          styles.square, animatedStyle, 
-{ backgroundColor: colorEnabled ? BUTTON_COLORS[value.color] : "#f4f6fb"}, //TODO: find better approach
+    <Pressable onPress={onSquareClick} hitSlop={4}>
+      {({ pressed }) => (
+        <Animated.View style={[
+          styles.square, animatedStyle,
+          colorEnabled && { backgroundColor: BUTTON_COLORS[value.color] },
+          pressed && styles.squarePressed
         ]}>
-        <Text
-          style={[
-            styles.squareText, 
-            //{color: 'red'}
-          ]}
-        >
-          {value.number}
-        </Text>
-      </Animated.View>
+
+          <Text
+            style={[
+              styles.squareText,
+              //{color: 'red'}
+            ]}
+          >
+            {value.number}
+          </Text>
+
+        </Animated.View>
+      )}
     </Pressable>
   );
 }
@@ -112,6 +115,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6, // Android shadow fallback
+  },
+  squarePressed: {
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.15,
+    shadowRadius: 2,
+    elevation: 1,
+    transform: [{ translateY: 2 }],
   },
   squareText: {
     fontSize: 36,

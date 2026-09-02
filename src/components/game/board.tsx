@@ -106,10 +106,10 @@ export default function Board() {
   const [started, setStarted] = useState<boolean>(true) //Needed? Delete later
   
   //Difficulty settings
-  const [duration, setDuration] = useState<number>(10000)
-  const [resetOnClick, setResetOnClick] = useState<boolean>(true)
-  const [refillGrid, setRefillGrid] = useState<boolean>(true)
-  const [colorBox, setColorBox] = useState<boolean>(true)
+  const [durationSetting, setDurationSetting] = useState<number>(10000)
+  const [resetTimerSeting, setResetTimerSetting] = useState<boolean>(true)
+  const [refillGridSetting, setRefillGrid] = useState<boolean>(true)
+  const [colorBoxSetting, setColorBoxSetting] = useState<boolean>(true)
 
   const timerRef = useRef(null)  //Tracks timer component
   
@@ -197,15 +197,15 @@ export default function Board() {
       setCombo(update)
       
       if (update.length === 0) { //win game conditional
-        handleConfetti()
+        handleWin()
       } 
       else {
         
-        if (resetOnClick){
+        if (resetTimerSeting){
           timerRef.current?.resetTimer()
         }
 
-        if(refillGrid == true){
+        if(refillGridSetting == true){
           setSquares(fillGrid(gridLength, update))
         }
 
@@ -230,14 +230,14 @@ export default function Board() {
     setUseConfetti(false);
     setBlasts([]);
     setConfetti([]);
-    setDuration(duration)
+    setDurationSetting(durationSetting)
     timerRef.current?.resetTimer()
     setStarted(true)
     setCombo(levelCombo)
     setSquares(fillGrid(gridLength, levelCombo));
   }
 
-  function handleExplode() {
+  function handleLose() {
     const nextBlasts = makeSquareBlasts();
     const nextConfetti = makeConfetti(colorsLose);
     setLevelWin(false)
@@ -251,7 +251,7 @@ export default function Board() {
     setStarted(false)
   }
 
-  function handleConfetti() {
+  function handleWin() {
     const nextConfetti = makeConfetti(colorsWin);
     setLevelWin(true)
     setConfetti(nextConfetti);
@@ -286,7 +286,7 @@ export default function Board() {
         </Animated.Text> */}
         <span hidden={exploding || levelWin}>
         <Animated.Text >
-        <Timer onTimout={handleExplode} pause={false} ref={timerRef} duration={duration}/>
+        <Timer onTimout={handleLose} pause={false} ref={timerRef} duration={durationSetting}/>
         </Animated.Text>
         </span>
 
@@ -318,7 +318,7 @@ export default function Board() {
                     value={squares[i]}
                     onSquareClick={() => handleSquareClick(squares[i])}
                     blast={exploding ? blasts[i] : null}
-                    colorEnabled={colorBox}
+                    colorEnabled={colorBoxSetting}
                   />
                 );
               })}
@@ -387,7 +387,7 @@ export default function Board() {
             <Text style={styles.resetButtonText}>Replay</Text>
           </Pressable>
           <Pressable
-            onPress={handleExplode}
+            onPress={handleLose}
             style={({ pressed }) => [
               styles.resetButton,
               pressed && styles.resetButtonPressed,
@@ -396,7 +396,7 @@ export default function Board() {
             <Text style={styles.resetButtonText}>Explode</Text>
           </Pressable>
           <Pressable
-            onPress={handleConfetti}
+            onPress={handleWin}
             style={({ pressed }) => [
               styles.resetButton,
               pressed && styles.resetButtonPressed,
