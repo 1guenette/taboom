@@ -16,7 +16,8 @@ interface BlastData {
 
 interface BoxEntry { //TODO: unify type with parent
   number: number | string,
-  boxColor: number
+  boxColor: number,
+  textColor: number
 }
 
 interface SquareProps {
@@ -24,6 +25,7 @@ interface SquareProps {
   onSquareClick: () => void;
   blast: BlastData | null;
   colorEnabled: boolean;
+  textColorEnabled: boolean;
 }
 
 
@@ -38,7 +40,7 @@ const BUTTON_COLORS = [
 ];
 
 
-export default function Square({ value, onSquareClick, blast, colorEnabled }: SquareProps) {
+export default function Square({ value, onSquareClick, blast, colorEnabled, textColorEnabled }: SquareProps) {
   const animatedStyle = blast ? blastAnimation(blast) : {};
 
   return (
@@ -53,7 +55,7 @@ export default function Square({ value, onSquareClick, blast, colorEnabled }: Sq
           <Text
             style={[
               styles.squareText,
-              //{color: 'red'}
+              textColorEnabled && {color: BUTTON_COLORS[value.textColor]}
             ]}
           >
             {/* {value.number} */}

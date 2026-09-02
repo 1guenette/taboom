@@ -43,6 +43,7 @@ interface ConfettiPiece {
 interface BoxEntry {
   number: number | string,
   boxColor: number,
+  textColor: number
 }
 
   const colorsWin = [
@@ -108,6 +109,7 @@ export default function Board() {
   const [resetTimerSeting, setResetTimerSetting] = useState<boolean>(true)
   const [refillGridSetting, setRefillGrid] = useState<boolean>(true)
   const [colorBoxSetting, setColorBoxSetting] = useState<boolean>(true)
+  const [textColorSetting, setTextColorSetting] = useState<boolean>(true) //combine with colorBoxSetting? 
   const [gridLengthSetting, setGridLengthSetting] = useState<number>(4)
   const [bombSetting, setBombSetting] = useState<boolean>(true)
   const [squares, setSquares] = useState<BoxEntry[]>(()=>fillGrid(gridLengthSetting, combo, bombSetting));
@@ -145,12 +147,15 @@ export default function Board() {
   function fillGrid(rowSize: number, comboVal: BoxEntry[], bombSetting: boolean){
     
     let comboList = [...comboVal] //copy so you don't mutate state
-    console.log("XXXXX")
-    console.log(comboList)
     let arr: BoxEntry[] = Array(rowSize*rowSize).fill(0).map(()=>{
-        return {
+      let bColor = Math.floor(Math.random()* BUTTON_COLORS.length)
+      let modColorGrid = BUTTON_COLORS.filter((v,i)=> i !== bColor)
+      let tColor = BUTTON_COLORS.indexOf(modColorGrid[Math.floor(Math.random()* BUTTON_COLORS.length - 1 )]) //TODO: look into better alternative for non matching
+      
+      return {
           number: Math.floor(Math.random()*numberRange),
-          boxColor: Math.floor(Math.random()* BUTTON_COLORS.length)
+          boxColor: bColor,
+          textColor: tColor //TODO: Retry when matching with box  
         }
     })
 
@@ -161,7 +166,6 @@ export default function Board() {
         arr[bombLoc].number = 'bomb'
       }
     }
-    console.log(arr)
     
     /**
      * TODO: Add non-number graphics here
@@ -172,7 +176,7 @@ export default function Board() {
     
     let flagLoc: number[] = []
     
-    //Fill grid with valid values
+    //Fill grid with valid number values
     while(comboList.length !== 0){
       let val:BoxEntry = comboList.shift()!
       let loc: number = Math.floor(Math.random()*rowSize*rowSize)
@@ -256,7 +260,6 @@ export default function Board() {
   }
 
   function handleLose() {
-    console.log(gridLengthSetting**2)
     const nextBlasts = makeSquareBlasts(gridLengthSetting**2);
     const nextConfetti = makeConfetti(colorsLose);
     setLevelWin(false)
@@ -338,6 +341,7 @@ export default function Board() {
                     onSquareClick={() => handleSquareClick(squares[i])}
                     blast={exploding ? blasts[i] : null}
                     colorEnabled={colorBoxSetting}
+                    textColorEnabled={textColorSetting}
                   />
                 );
               })}
