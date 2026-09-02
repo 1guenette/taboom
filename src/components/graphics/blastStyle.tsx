@@ -105,10 +105,11 @@ export function makeConfetti(colorGrid:string[] = colorsLose): ConfettiPiece[] {
   });
 }
 
-export function makeSquareBlasts(): BlastData[] {
-  return Array.from({ length: 16 }).map((_, i) => {
-    const row = Math.floor(i / 16);
-    const col = i % 16;
+export function makeSquareBlasts(squareCount: number): BlastData[] {
+  console.log(squareCount)
+  return Array.from({ length: squareCount }).map((_, i) => {
+    const row = Math.floor(i / squareCount);
+    const col = i % squareCount;
     const baseDx = (col - 1) * (140 + Math.random() * 60);
     const baseDy = (row - 1) * (140 + Math.random() * 60);
     const neg = i%2 == 0 ? 1 : -1

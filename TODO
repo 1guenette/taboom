@@ -1,9 +1,10 @@
-Grid Mining conditional
 Grid number-color switch logic
 number-color match logic
-Grid fill logic (singular number to find instead of whole combo)
 Level Logic
 Points logic
+
+//-------
+Grid fill logic (singular number to find instead of whole combo)
 Account Management
 Life bar?
 Make colorBlind boxes

@@ -41,8 +41,8 @@ interface ConfettiPiece {
 }
 
 interface BoxEntry {
-  number: number,
-  color?: number
+  number: number | string,
+  boxColor: number,
 }
 
   const colorsWin = [
@@ -93,13 +93,11 @@ export default function Board() {
 
   //Game session tracking
   const [level, setLevel] = useState<number>(1)
-  const [gridLength, setGridLength] = useState<number>(4)
   const [numberRange, setNumberRange] = useState<number>(10)
   
   //Grid
   const [levelCombo, setLevelCombo] = useState<BoxEntry[]>([{number: 1},{number: 2},{number: 3}])
   const [combo, setCombo] = useState<BoxEntry[]>(levelCombo)
-  const [squares, setSquares] = useState<BoxEntry[]>(()=>fillGrid(gridLength, combo));
   
   const [levelWin, setLevelWin] = useState<boolean>(false)
   
@@ -110,9 +108,15 @@ export default function Board() {
   const [resetTimerSeting, setResetTimerSetting] = useState<boolean>(true)
   const [refillGridSetting, setRefillGrid] = useState<boolean>(true)
   const [colorBoxSetting, setColorBoxSetting] = useState<boolean>(true)
-
-  const timerRef = useRef(null)  //Tracks timer component
+  const [gridLengthSetting, setGridLengthSetting] = useState<number>(4)
+  const [bombSetting, setBombSetting] = useState<boolean>(true)
+  const [squares, setSquares] = useState<BoxEntry[]>(()=>fillGrid(gridLengthSetting, combo, bombSetting));
   
+  //TODO settings
+  const timerRef = useRef(null)  //Tracks timer component
+ 
+  const [comboColorMatchSetting, setComboColorMatchSetting] = useState<boolean>()
+  const [comboLength, setComboLength] = useState<number>(3)
 
 
   // Replaces the CSS `status-pulse` keyframe animation.
@@ -138,7 +142,7 @@ export default function Board() {
   }, [pulseAnim]);
 
 
-  function fillGrid(rowSize: number, comboVal: BoxEntry[]){
+  function fillGrid(rowSize: number, comboVal: BoxEntry[], bombSetting: boolean){
     
     let comboList = [...comboVal] //copy so you don't mutate state
     console.log("XXXXX")
@@ -146,9 +150,18 @@ export default function Board() {
     let arr: BoxEntry[] = Array(rowSize*rowSize).fill(0).map(()=>{
         return {
           number: Math.floor(Math.random()*numberRange),
-          color: Math.floor(Math.random()* BUTTON_COLORS.length)
+          boxColor: Math.floor(Math.random()* BUTTON_COLORS.length)
         }
     })
+
+    if(bombSetting){
+      let numBombs = Math.floor(0.2*rowSize*rowSize)
+      for (let i = 0; i<numBombs; i++){
+        let bombLoc = Math.floor(Math.random()*rowSize*rowSize)
+        arr[bombLoc].number = 'bomb'
+      }
+    }
+    console.log(arr)
     
     /**
      * TODO: Add non-number graphics here
@@ -206,9 +219,14 @@ export default function Board() {
         }
 
         if(refillGridSetting == true){
-          setSquares(fillGrid(gridLength, update))
+          setSquares(fillGrid(gridLengthSetting, update, bombSetting))
         }
 
+      }
+    }
+    else{
+      if(i.number == 'bomb'){
+        handleLose()
       }
     }
   }
@@ -234,11 +252,12 @@ export default function Board() {
     timerRef.current?.resetTimer()
     setStarted(true)
     setCombo(levelCombo)
-    setSquares(fillGrid(gridLength, levelCombo));
+    setSquares(fillGrid(gridLengthSetting, levelCombo));
   }
 
   function handleLose() {
-    const nextBlasts = makeSquareBlasts();
+    console.log(gridLengthSetting**2)
+    const nextBlasts = makeSquareBlasts(gridLengthSetting**2);
     const nextConfetti = makeConfetti(colorsLose);
     setLevelWin(false)
     setBlasts(nextBlasts);
@@ -308,10 +327,10 @@ export default function Board() {
         </span>
 
         <View style={styles.boardWrap}>
-          {[0, 1, 2, 3].map((row) => (
+          {[...Array(gridLengthSetting).keys()].map((row) => (
             <View style={styles.boardRow} key={row}>
-              {[0, 1, 2, 3].map((col) => {
-                const i = row * 4 + col;
+              {[...Array(gridLengthSetting).keys()].map((col) => {
+                const i = row * gridLengthSetting + col;
                 return (
                   <Square
                     key={i}
@@ -386,7 +405,7 @@ export default function Board() {
           >
             <Text style={styles.resetButtonText}>Replay</Text>
           </Pressable>
-          <Pressable
+          {/* <Pressable
             onPress={handleLose}
             style={({ pressed }) => [
               styles.resetButton,
@@ -413,7 +432,7 @@ export default function Board() {
             ]}
           >
             <Text style={styles.resetButtonText}>Pause</Text>
-          </Pressable>
+          </Pressable> */}
         </View>
       </View>
     </LinearGradient>

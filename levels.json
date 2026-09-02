@@ -1,0 +1,47 @@
+[
+  {
+    "level": "Easy",
+    "durationSetting": 10000,
+    "resetTimerSeting": false,
+    "refillGridSetting": false,
+    "colorBoxSetting": false,
+    "gridLengthSetting": 2,
+    "bombSetting": false
+  },
+  {
+    "level": "Normal",
+    "durationSetting": 8000,
+    "resetTimerSeting": true,
+    "refillGridSetting": false,
+    "colorBoxSetting": false,
+    "gridLengthSetting": 3,
+    "bombSetting": false
+  },
+  {
+    "level": "Hard",
+    "durationSetting": 6000,
+    "resetTimerSeting": true,
+    "refillGridSetting": true,
+    "colorBoxSetting": false,
+    "gridLengthSetting": 3,
+    "bombSetting": false
+  },
+  {
+    "level": "Expert",
+    "durationSetting": 4000,
+    "resetTimerSeting": true,
+    "refillGridSetting": true,
+    "colorBoxSetting": true,
+    "gridLengthSetting": 4,
+    "bombSetting": false
+  },
+  {
+    "level": "Insane",
+    "durationSetting": 2000,
+    "resetTimerSeting": true,
+    "refillGridSetting": true,
+    "colorBoxSetting": true,
+    "gridLengthSetting": 5,
+    "bombSetting": true
+  }
+]
