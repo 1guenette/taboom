@@ -113,6 +113,9 @@ export default function Board() {
   const [gridLengthSetting, setGridLengthSetting] = useState<number>(4)
   const [bombSetting, setBombSetting] = useState<boolean>(true)
   const [squares, setSquares] = useState<BoxEntry[]>(()=>fillGrid(gridLengthSetting, combo, bombSetting));
+
+  const [resetCount, setResetCount] = useState(0);
+
   
   //TODO settings
   const timerRef = useRef(null)  //Tracks timer component
@@ -247,6 +250,9 @@ export default function Board() {
 
 
   function handleReset() {
+    setResetCount((c) => c + 1);
+    blasts.forEach((b) => b.progress.stopAnimation(() => b.progress.setValue(0))); //for ios
+    confetti.forEach((c) => c.progress.stopAnimation(() => c.progress.setValue(0))); //for ios
     setLevelWin(false)
     setExploding(false);
     setUseConfetti(false);
@@ -292,42 +298,45 @@ export default function Board() {
     outputRange: [4, 14],
   });
 
+  function displayTimer(){
+    if(!exploding ){
+      return (<Animated.Text >
+        <Timer onTimout={handleLose} pause={false} ref={timerRef} duration={durationSetting}/>
+        </Animated.Text>)
+    }
+  }
+
+  function displayGameOver(){
+    console.log(exploding)
+    if(exploding){
+      return (<Animated.Text>
+                    <Text style={styles.status}>
+                    Game Over
+                    </Text>
+                 </Animated.Text>)
+    }
+  }
+
+  function displayWinSign(){
+    if(levelWin){
+      return(<Animated.Text>
+                    <Text style={styles.status}>
+                    You Win!
+                    </Text>
+                 </Animated.Text>)
+    }
+  }
+
   return (
     // Radial gradients aren't supported by expo-linear-gradient, so this
     // approximates the web version's radial background with a linear one.
     <LinearGradient colors={["#1e2749", "#10142b"]} style={styles.game}>
       <View style={styles.boardPanel}>
         <Text style={styles.status}>{[displayCombo()]}</Text>
-        {/* <Animated.Text
-          style={[
-            styles.statusWin,
-            { transform: [{ scale: pulseScale }], textShadowRadius: pulseGlow },
-          ]}
-        >
-          You Win
-        </Animated.Text> */}
-        <span hidden={exploding || levelWin}>
-        <Animated.Text >
-        <Timer onTimout={handleLose} pause={false} ref={timerRef} duration={durationSetting}/>
-        </Animated.Text>
-        </span>
 
-        <span hidden={!exploding}>
-                 <Animated.Text>
-                    <Text style={styles.status}>
-                    Game Over
-                    </Text>
-                 </Animated.Text>
-                 
-        </span>
-        <span hidden={!levelWin}>
-                 <Animated.Text>
-                    <Text style={styles.status}>
-                    You Win!
-                    </Text>
-                 </Animated.Text>
-                 
-        </span>
+        {displayTimer()}
+        {displayGameOver()}
+        {displayWinSign()}
 
         <View style={styles.boardWrap}>
           {[...Array(gridLengthSetting).keys()].map((row) => (
@@ -336,7 +345,7 @@ export default function Board() {
                 const i = row * gridLengthSetting + col;
                 return (
                   <Square
-                    key={i}
+                    key={`${i}-${resetCount}`}
                     value={squares[i]}
                     onSquareClick={() => handleSquareClick(squares[i])}
                     blast={exploding ? blasts[i] : null}

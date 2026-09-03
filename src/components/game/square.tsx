@@ -43,6 +43,10 @@ const BUTTON_COLORS = [
 export default function Square({ value, onSquareClick, blast, colorEnabled, textColorEnabled }: SquareProps) {
   const animatedStyle = blast ? blastAnimation(blast) : {};
 
+  function displayBomb(value: BoxEntry){
+    return '💥'
+  }
+
   return (
     <Pressable onPress={onSquareClick} hitSlop={4}>
       {({ pressed }) => (
@@ -59,7 +63,7 @@ export default function Square({ value, onSquareClick, blast, colorEnabled, text
             ]}
           >
             {/* {value.number} */}
-            {value.number !== 'bomb' ? value.number :  <span>&#128163;</span>} 
+            {value.number !== 'bomb' ? value.number : '💥'}
           </Text>
 
         </Animated.View>

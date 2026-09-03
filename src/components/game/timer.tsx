@@ -80,14 +80,13 @@ export default function Timer({ onTimout, pause, ref, duration }: TimerProps) {
         else {
             // Render a countdown
             return (
-                <span>
                  <Animated.Text>
                     <Text style={styles.status}>
                     {hours}:{minutes}:{seconds}
                     </Text>
                  </Animated.Text>
                  
-                 </span>
+
             );
         }
     };
@@ -102,9 +101,8 @@ export default function Timer({ onTimout, pause, ref, duration }: TimerProps) {
                  </Animated.Text>
                  
             </span> */}
-            <span hidden={displayTimout}>
-            <Countdown date={targetDate} renderer={renderer} onComplete={()=>{handleTimout()}} controlled={false} ref={timerRef} key={key}/>
-              </span>
+            
+            {!displayTimout && <Countdown date={targetDate} renderer={renderer} onComplete={()=>{handleTimout()}} controlled={false} ref={timerRef} key={key}/>}
           </>)
     
 
