@@ -14,7 +14,7 @@ interface BlastData {
   progress: Animated.Value;
 }
 
-interface BoxEntry { //TODO: unify type with parent
+interface BoxEntry {
   number: number | string,
   boxColor: number,
   textColor: number

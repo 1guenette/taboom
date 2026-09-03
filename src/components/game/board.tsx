@@ -108,7 +108,7 @@ export default function Board() {
   const [numberRange, setNumberRange] = useState<number>(10)
   
   //Grid
-  const [levelCombo, setLevelCombo] = useState<BoxEntry[]>([{number: 1, textColor: 0},{number: 2, textColor: 1},{number: 3, textColor: 6}])
+  const [levelCombo, setLevelCombo] = useState<BoxEntry[]>([{number: 1, textColor: 0, boxColor: 2},{number: 2, textColor: 1, boxColor: 0},{number: 3, textColor: 6, boxColor:4}])
   const [combo, setCombo] = useState<BoxEntry[]>(levelCombo)
   
   const [levelWin, setLevelWin] = useState<boolean>(false)
@@ -125,12 +125,12 @@ export default function Board() {
   const [bombSetting, setBombSetting] = useState<boolean>(true)
   const [blendInSetting, setBlendInSetting] = useState<boolean>(false)
   const [squares, setSquares] = useState<BoxEntry[]>(()=>fillGrid(gridLengthSetting, combo, bombSetting, blendInSetting));
-  const [resetCount, setResetCount] = useState(0);
+  
 
   
   //TODO settings
   const timerRef = useRef(null)  //Tracks timer component
- 
+ const [resetCount, setResetCount] = useState(0); //needed in key for fucking iOS compatibility 
   const [comboColorMatchSetting, setComboColorMatchSetting] = useState<boolean>()
   const [comboLength, setComboLength] = useState<number>(3)
 
@@ -167,7 +167,6 @@ export default function Board() {
       while (tColor === bColor && !blendTextSetting) {
         tColor = Math.floor(Math.random() * BUTTON_COLORS.length)
       }
-      console.log(tColor == bColor)
       return {
           number: Math.floor(Math.random()*numberRange),
           boxColor: bColor,
@@ -197,9 +196,11 @@ export default function Board() {
       let val: BoxEntry = comboList.shift()!
       let loc: number = Math.floor(Math.random() * rowSize * rowSize)
 
-      let locExists;
-      locExists = arr.findIndex(n => n.number === val.number && n.textColor == val.textColor)
-      if (locExists === -1) {
+      // let locExists;
+      // locExists = arr.findIndex(n => n.number === val.number && n.textColor == val.textColor)
+      
+      
+      // if (locExists === -1) {
 
         //find valid location (that isn't already filled with valid value)
         while (flagLoc.includes(loc)) {
@@ -208,12 +209,13 @@ export default function Board() {
         flagLoc.push(loc)
         arr[loc] = val
 
-      }
-      else {
-        flagLoc.push(locExists)
-      }
+      // }
+      // else {
+      //   flagLoc.push(locExists)
+      // }
     }
-
+    console.log("----------------")
+    console.log(arr)
     return arr
   }
 
@@ -226,7 +228,6 @@ export default function Board() {
 
   function handleSquareClick(i: BoxEntry) {
   if (combo.length > 0) {
-    console.log(i)
     if (i.number === combo[0].number && (textColorSetting == true && i.textColor == combo[0].textColor)) {
       const update = combo.slice(1)
       setCombo(update)
@@ -241,7 +242,7 @@ export default function Board() {
         }
 
         if(refillGridSetting == true){
-          setSquares(fillGrid(gridLengthSetting, combo, bombSetting, blendInSetting))
+          setSquares(fillGrid(gridLengthSetting, update, bombSetting, blendInSetting))
         }
 
       }
@@ -277,7 +278,7 @@ export default function Board() {
     timerRef.current?.resetTimer()
     setStarted(true)
     setCombo(levelCombo)
-    setSquares(fillGrid(gridLengthSetting, combo, bombSetting, blendInSetting));
+    setSquares(fillGrid(gridLengthSetting, levelCombo, bombSetting, blendInSetting));
   }
 
   function handleLose() {
@@ -322,7 +323,7 @@ export default function Board() {
   }
 
   function displayGameOver(){
-    console.log(exploding)
+
     if(exploding){
       return (<Animated.Text>
                     <Text style={styles.status}>
@@ -352,7 +353,8 @@ export default function Board() {
         {displayWinSign()}
 
         <View style={styles.boardWrap}>
-          {[...Array(gridLengthSetting).keys()].map((row) => (
+          {
+          [...Array(gridLengthSetting).keys()].map((row) => (
             <View style={styles.boardRow} key={row}>
               {[...Array(gridLengthSetting).keys()].map((col) => {
                 const i = row * gridLengthSetting + col;
