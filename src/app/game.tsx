@@ -1,3 +1,4 @@
+import { useIsFocused } from 'expo-router';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -8,6 +9,9 @@ import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 
 
 export default function Game() {
+  // Tab screens stay mounted after a blur, so the board is torn down whenever
+  // the route loses focus and rebuilt from scratch on the next visit.
+  const isFocused = useIsFocused();
   const safeAreaInsets = useSafeAreaInsets();
   const insets = {
     ...safeAreaInsets,
@@ -39,8 +43,7 @@ export default function Game() {
         </ThemedView> */}
 
           <View style={styles.sectionsWrapper}>
-            <Board/>
- 
+            {isFocused && <Board />}
           </View>
         </View>
       </ScrollView>
