@@ -1,14 +1,10 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import Board from '@/components/game/board';
+import { ScreenBackground } from '@/components/screen-background';
 
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-
-// Radial gradients aren't supported by expo-linear-gradient, so this
-// approximates the web version's radial background with a linear one.
-const BackgroundGradient = ['#1e2749', '#10142b'] as const;
 
 
 export default function Game() {
@@ -32,7 +28,7 @@ export default function Game() {
   });
 
   return (
-    <LinearGradient colors={BackgroundGradient} style={styles.background}>
+    <ScreenBackground>
       <ScrollView
         style={styles.scrollView}
         contentInset={insets}
@@ -48,14 +44,11 @@ export default function Game() {
           </View>
         </View>
       </ScrollView>
-    </LinearGradient>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-  },
   scrollView: {
     flex: 1,
     backgroundColor: 'transparent',

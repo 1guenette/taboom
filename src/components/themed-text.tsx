@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     lineHeight: 44,
     fontWeight: 600,
+    color: "white"
   },
   link: {
     lineHeight: 30,
