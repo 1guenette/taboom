@@ -26,10 +26,12 @@ interface SquareProps {
   blast: BlastData | null;
   colorEnabled: boolean;
   textColorEnabled: boolean;
+  blendInSetting: boolean;
 }
 
 
   const BUTTON_COLORS = [
+    "black",
     "#dc3636",
     "#fb5607",
     "#ff006e",
@@ -51,7 +53,7 @@ interface SquareProps {
   ];
   
 
-export default function Square({ value, onSquareClick, blast, colorEnabled, textColorEnabled }: SquareProps) {
+export default function Square({ value, onSquareClick, blast, colorEnabled, textColorEnabled, blendInSetting }: SquareProps) {
   const animatedStyle = blast ? blastAnimation(blast) : {};
 
   function displayBomb(value: BoxEntry){

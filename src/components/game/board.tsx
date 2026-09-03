@@ -123,9 +123,8 @@ export default function Board() {
   const [textColorSetting, setTextColorSetting] = useState<boolean>(true) //combine with colorBoxSetting? 
   const [gridLengthSetting, setGridLengthSetting] = useState<number>(4)
   const [bombSetting, setBombSetting] = useState<boolean>(true)
-  const [squares, setSquares] = useState<BoxEntry[]>(()=>fillGrid(gridLengthSetting, combo, bombSetting));
   const [blendInSetting, setBlendInSetting] = useState<boolean>(false)
-
+  const [squares, setSquares] = useState<BoxEntry[]>(()=>fillGrid(gridLengthSetting, combo, bombSetting, blendInSetting));
   const [resetCount, setResetCount] = useState(0);
 
   
@@ -159,15 +158,16 @@ export default function Board() {
   }, [pulseAnim]);
 
 
-  function fillGrid(rowSize: number, comboVal: BoxEntry[], bombSetting: boolean){
-    
+  function fillGrid(rowSize: number, comboVal: BoxEntry[], bombSetting: boolean, blendTextSetting: boolean) {
+
     let comboList = [...comboVal] //copy so you don't mutate state
     let arr: BoxEntry[] = Array(rowSize*rowSize).fill(0).map(()=>{
       let bColor = Math.floor(Math.random()* BUTTON_COLORS.length)
-      let modColorGrid = BUTTON_COLORS.filter((v,i)=> i !== bColor)
-      
-      let tColor = BUTTON_COLORS.indexOf(modColorGrid[Math.floor(Math.random()* BUTTON_COLORS.length - 1 )]) //TODO: look into better alternative for non matching
-      
+      let tColor =  Math.floor(Math.random()* BUTTON_COLORS.length)
+      while (tColor === bColor && !blendTextSetting) {
+        tColor = Math.floor(Math.random() * BUTTON_COLORS.length)
+      }
+      console.log(tColor == bColor)
       return {
           number: Math.floor(Math.random()*numberRange),
           boxColor: bColor,
@@ -189,28 +189,28 @@ export default function Board() {
 
     //----------------------------------------
 
-    
+
     let flagLoc: number[] = []
-    
+
     //Fill grid with valid number values
-    while(comboList.length !== 0){
-      let val:BoxEntry = comboList.shift()!
-      let loc: number = Math.floor(Math.random()*rowSize*rowSize)
-      
-      let locExists;  
-      locExists = arr.findIndex(n=>n.number === val.number && n.textColor == val.textColor)
-      if(locExists === -1){  
-        
+    while (comboList.length !== 0) {
+      let val: BoxEntry = comboList.shift()!
+      let loc: number = Math.floor(Math.random() * rowSize * rowSize)
+
+      let locExists;
+      locExists = arr.findIndex(n => n.number === val.number && n.textColor == val.textColor)
+      if (locExists === -1) {
+
         //find valid location (that isn't already filled with valid value)
-        while(flagLoc.includes(loc)){
-          loc = Math.floor(Math.random()*rowSize*rowSize)
+        while (flagLoc.includes(loc)) {
+          loc = Math.floor(Math.random() * rowSize * rowSize)
         }
         flagLoc.push(loc)
         arr[loc] = val
-        
+
       }
-      else{
-          flagLoc.push(locExists)
+      else {
+        flagLoc.push(locExists)
       }
     }
 
@@ -241,7 +241,7 @@ export default function Board() {
         }
 
         if(refillGridSetting == true){
-          setSquares(fillGrid(gridLengthSetting, update, bombSetting))
+          setSquares(fillGrid(gridLengthSetting, combo, bombSetting, blendInSetting))
         }
 
       }
@@ -277,7 +277,7 @@ export default function Board() {
     timerRef.current?.resetTimer()
     setStarted(true)
     setCombo(levelCombo)
-    setSquares(fillGrid(gridLengthSetting, levelCombo));
+    setSquares(fillGrid(gridLengthSetting, combo, bombSetting, blendInSetting));
   }
 
   function handleLose() {
@@ -364,6 +364,7 @@ export default function Board() {
                     blast={exploding ? blasts[i] : null}
                     colorEnabled={colorBoxSetting}
                     textColorEnabled={textColorSetting}
+                    blendInSetting={blendInSetting}
                   />
                 );
               })}
