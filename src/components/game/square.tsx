@@ -29,16 +29,27 @@ interface SquareProps {
 }
 
 
-const BUTTON_COLORS = [
-  "#dc3636",
-  "#fb5607",
-  "#ff006e",
-  "#dfd21e",
-  "#0f8d37",
-  "#1207e0",
-  "#8b3395",
-];
+  const BUTTON_COLORS = [
+    "#dc3636",
+    "#fb5607",
+    "#ff006e",
+    "#dfd21e",
+    "#0f8d37",
+    "#1207e0",
+    "#8b3395",
+  ];
 
+    const BUTTON_TEXT_COLORS = [
+    "black",
+    "#dc3636",
+    "#fb5607",
+    "#ff006e",
+    "#dfd21e",
+    "#0f8d37",
+    "#1207e0",
+    "#8b3395",
+  ];
+  
 
 export default function Square({ value, onSquareClick, blast, colorEnabled, textColorEnabled }: SquareProps) {
   const animatedStyle = blast ? blastAnimation(blast) : {};
@@ -59,7 +70,7 @@ export default function Square({ value, onSquareClick, blast, colorEnabled, text
           <Text
             style={[
               styles.squareText,
-              textColorEnabled && {color: BUTTON_COLORS[value.textColor]}
+              textColorEnabled && {color: BUTTON_TEXT_COLORS[value.textColor]}
             ]}
           >
             {/* {value.number} */}

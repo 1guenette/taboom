@@ -41,7 +41,7 @@ interface ConfettiPiece {
 
 interface BoxEntry {
   number: number | string,
-  boxColor: number,
+  boxColor?: number,
   textColor: number
 }
 
@@ -65,6 +65,18 @@ interface BoxEntry {
 
 
   const BUTTON_COLORS = [
+    "black",
+    "#dc3636",
+    "#fb5607",
+    "#ff006e",
+    "#dfd21e",
+    "#0f8d37",
+    "#1207e0",
+    "#8b3395",
+  ];
+
+    const BUTTON_TEXT_COLORS = [
+    "black",
     "#dc3636",
     "#fb5607",
     "#ff006e",
@@ -96,7 +108,7 @@ export default function Board() {
   const [numberRange, setNumberRange] = useState<number>(10)
   
   //Grid
-  const [levelCombo, setLevelCombo] = useState<BoxEntry[]>([{number: 1},{number: 2},{number: 3}])
+  const [levelCombo, setLevelCombo] = useState<BoxEntry[]>([{number: 1, textColor: 0},{number: 2, textColor: 1},{number: 3, textColor: 6}])
   const [combo, setCombo] = useState<BoxEntry[]>(levelCombo)
   
   const [levelWin, setLevelWin] = useState<boolean>(false)
@@ -112,6 +124,7 @@ export default function Board() {
   const [gridLengthSetting, setGridLengthSetting] = useState<number>(4)
   const [bombSetting, setBombSetting] = useState<boolean>(true)
   const [squares, setSquares] = useState<BoxEntry[]>(()=>fillGrid(gridLengthSetting, combo, bombSetting));
+  const [blendInSetting, setBlendInSetting] = useState<boolean>(false)
 
   const [resetCount, setResetCount] = useState(0);
 
@@ -152,6 +165,7 @@ export default function Board() {
     let arr: BoxEntry[] = Array(rowSize*rowSize).fill(0).map(()=>{
       let bColor = Math.floor(Math.random()* BUTTON_COLORS.length)
       let modColorGrid = BUTTON_COLORS.filter((v,i)=> i !== bColor)
+      
       let tColor = BUTTON_COLORS.indexOf(modColorGrid[Math.floor(Math.random()* BUTTON_COLORS.length - 1 )]) //TODO: look into better alternative for non matching
       
       return {
@@ -183,7 +197,8 @@ export default function Board() {
       let val:BoxEntry = comboList.shift()!
       let loc: number = Math.floor(Math.random()*rowSize*rowSize)
       
-      let locExists = arr.findIndex(n=>n.number === val.number)
+      let locExists;  
+      locExists = arr.findIndex(n=>n.number === val.number && n.textColor == val.textColor)
       if(locExists === -1){  
         
         //find valid location (that isn't already filled with valid value)
@@ -203,7 +218,7 @@ export default function Board() {
   }
 
   function displayCombo(){
-    return combo.map(v=>v.number).join("")
+    return combo.map((v, i)=>{return <Text key={i} style={{"color": BUTTON_TEXT_COLORS[v.textColor] }}>{v.number}</Text>})
   }
   
 
@@ -211,7 +226,8 @@ export default function Board() {
 
   function handleSquareClick(i: BoxEntry) {
   if (combo.length > 0) {
-    if (i.number === combo[0].number) {
+    console.log(i)
+    if (i.number === combo[0].number && (textColorSetting == true && i.textColor == combo[0].textColor)) {
       const update = combo.slice(1)
       setCombo(update)
       
@@ -433,7 +449,7 @@ export default function Board() {
           >
             <Text style={styles.resetButtonText}>Confetti</Text>
           </Pressable>
-
+*/}
           <Pressable
             onPress={()=>{timerRef.current?.pauseGame()}}
             style={({ pressed }) => [
@@ -442,7 +458,7 @@ export default function Board() {
             ]}
           >
             <Text style={styles.resetButtonText}>Pause</Text>
-          </Pressable> */}
+          </Pressable> 
         </View>
       </View>
     </View>
