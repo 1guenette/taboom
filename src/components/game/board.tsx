@@ -124,6 +124,8 @@ export default function Board() {
   const [gridLengthSetting, setGridLengthSetting] = useState<number>(4)
   const [bombSetting, setBombSetting] = useState<boolean>(true)
   const [blendInSetting, setBlendInSetting] = useState<boolean>(false)
+
+  //-----------------------
   const [squares, setSquares] = useState<BoxEntry[]>(()=>fillGrid(gridLengthSetting, combo, bombSetting, blendInSetting));
   
 
