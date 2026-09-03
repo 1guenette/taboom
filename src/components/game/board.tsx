@@ -1,4 +1,3 @@
-import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useRef, useState } from "react";
 
 import {
@@ -328,9 +327,7 @@ export default function Board() {
   }
 
   return (
-    // Radial gradients aren't supported by expo-linear-gradient, so this
-    // approximates the web version's radial background with a linear one.
-    <LinearGradient colors={["#1e2749", "#10142b"]} style={styles.game}>
+    <View style={styles.game}>
       <View style={styles.boardPanel}>
         <Text style={styles.status}>{[displayCombo()]}</Text>
 
@@ -448,7 +445,7 @@ export default function Board() {
           </Pressable> */}
         </View>
       </View>
-    </LinearGradient>
+    </View>
   );
 }
 

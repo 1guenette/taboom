@@ -1,12 +1,14 @@
-import { Platform, ScrollView, StyleSheet } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import Board from '@/components/game/board';
 
-import { ThemedView } from '@/components/themed-view';
-
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+
+// Radial gradients aren't supported by expo-linear-gradient, so this
+// approximates the web version's radial background with a linear one.
+const BackgroundGradient = ['#1e2749', '#10142b'] as const;
 
 
 export default function Game() {
@@ -15,7 +17,6 @@ export default function Game() {
     ...safeAreaInsets,
     bottom: safeAreaInsets.bottom + BottomTabInset + Spacing.three,
   };
-  const theme = useTheme();
 
   const contentPlatformStyle = Platform.select({
     android: {
@@ -31,27 +32,33 @@ export default function Game() {
   });
 
   return (
-    <ScrollView
-      style={[styles.scrollView, { backgroundColor: theme.background }]}
-      contentInset={insets}
-      contentContainerStyle={[styles.contentContainer, contentPlatformStyle]}>
-      <ThemedView style={styles.container}>
-        {/* <ThemedView style={styles.titleContainer}>
+    <LinearGradient colors={BackgroundGradient} style={styles.background}>
+      <ScrollView
+        style={styles.scrollView}
+        contentInset={insets}
+        contentContainerStyle={[styles.contentContainer, contentPlatformStyle]}>
+        <View style={styles.container}>
+          {/* <ThemedView style={styles.titleContainer}>
           <ThemedText type="subtitle">Game</ThemedText>
         </ThemedView> */}
 
-        <ThemedView style={styles.sectionsWrapper}>
-          <Board/>
+          <View style={styles.sectionsWrapper}>
+            <Board/>
  
-        </ThemedView>
-      </ThemedView>
-    </ScrollView>
+          </View>
+        </View>
+      </ScrollView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   scrollView: {
     flex: 1,
+    backgroundColor: 'transparent',
   },
   contentContainer: {
     flexDirection: 'row',
