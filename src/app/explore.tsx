@@ -1,16 +1,19 @@
-import { Image } from 'expo-image';
+import { router } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ExternalLink } from '@/components/external-link';
 import { ScreenBackground } from '@/components/screen-background';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Collapsible } from '@/components/ui/collapsible';
-import { WebBadge } from '@/components/web-badge';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+
+const LEVELS = Array.from({ length: 10 }, (_, index) => ({
+  level: index + 1,
+  score: 0,
+  locked: index == 0 ? true : false
+}));
 
 export default function TabTwoScreen() {
   const safeAreaInsets = useSafeAreaInsets();
@@ -41,41 +44,51 @@ export default function TabTwoScreen() {
         contentContainerStyle={[styles.contentContainer, contentPlatformStyle]}>
         <View style={styles.container}>
           <View style={styles.titleContainer}>
-            <ThemedText type="subtitle">Explore</ThemedText>
-            <ThemedText style={styles.centerText} themeColor="textSecondary">
-              This starter app includes example{'\n'}code to help you get started.
-            </ThemedText>
-
-            <ExternalLink href="https://docs.expo.dev" asChild>
-              <Pressable style={({ pressed }) => pressed && styles.pressed}>
-                <ThemedView type="backgroundElement" style={styles.linkButton}>
-                  <ThemedText type="link">Expo documentation</ThemedText>
-                  <SymbolView
-                    tintColor={theme.text}
-                    name={{ ios: 'arrow.up.right.square', android: 'link', web: 'link' }}
-                    size={12}
-                  />
-                </ThemedView>
-              </Pressable>
-            </ExternalLink>
+            <ThemedText type="subtitle">Levels</ThemedText>
           </View>
 
-          <View style={styles.sectionsWrapper}>
-            <Collapsible title="Android, iOS, and web support">
-              <ThemedView type="backgroundElement" style={styles.collapsibleContent}>
-                <ThemedText type="small">
-                  You can open this project on Android, iOS, and the web. To open the web version,
-                  press <ThemedText type="smallBold">w</ThemedText> in the terminal running this
-                  project.
+          <ThemedView type="backgroundElement" style={styles.table}>
+            <View style={[styles.row, styles.headerRow]}>
+              <ThemedText type="smallBold" style={styles.levelCell}>
+                Level
+              </ThemedText>
+              <ThemedText type="smallBold" style={styles.scoreCell}>
+                Score
+              </ThemedText>
+              <View style={styles.playCell}>
+                <ThemedText type="smallBold" style={styles.playHeader}>
+                  Play
                 </ThemedText>
-                <Image
-                  source={require('@/assets/images/tutorial-web.png')}
-                  style={styles.imageTutorial}
-                />
-              </ThemedView>
-            </Collapsible>
-          </View>
-          {Platform.OS === 'web' && <WebBadge />}
+              </View>
+            </View>
+
+            {LEVELS.map((entry, i) => {
+             
+              const img = i == 0 ? 'play_arrow' : 'lock'
+              const img_ios = i == 0 ? 'play.fill' : 'lock'
+              return (
+              <View key={entry.level} style={styles.row}>
+                <ThemedText style={styles.levelCell}>{entry.level}</ThemedText>
+                <ThemedText style={styles.scoreCell}>{entry.score}</ThemedText>
+                <View style={styles.playCell}>
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={`Play level ${entry.level}`}
+                    onPress={() => router.push('/game')}
+                    style={({ pressed }) => pressed && styles.pressed}>
+                    <ThemedView type="backgroundSelected" style={styles.playButtonInner}>
+                      <SymbolView
+                        tintColor={theme.text}
+                        name={{ ios: img_ios, android: img, web: img }}
+                        size={14}
+                      />
+                      <ThemedText type="smallBold">Play</ThemedText>
+                    </ThemedView>
+                  </Pressable>
+                </View>
+              </View>
+            )})}
+          </ThemedView>
         </View>
       </ScrollView>
     </ScreenBackground>
@@ -94,45 +107,52 @@ const styles = StyleSheet.create({
   container: {
     maxWidth: MaxContentWidth,
     flexGrow: 1,
+    paddingHorizontal: Spacing.four,
   },
   titleContainer: {
     gap: Spacing.three,
     alignItems: 'center',
-    paddingHorizontal: Spacing.four,
     paddingVertical: Spacing.six,
   },
-  centerText: {
+  table: {
+    borderRadius: Spacing.three,
+    overflow: 'hidden',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.three,
+    paddingVertical: Spacing.two,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'rgba(128, 128, 128, 0.35)',
+  },
+  headerRow: {
+    paddingVertical: Spacing.three,
+  },
+  levelCell: {
+    flex: 1,
+  },
+  playCell: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  playHeader: {
     textAlign: 'center',
+  },
+  scoreCell: {
+    flex: 1,
+    textAlign: 'center',
+  },
+  playButtonInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.one,
+    paddingHorizontal: Spacing.three,
+    paddingVertical: Spacing.one,
+    borderRadius: Spacing.five,
   },
   pressed: {
     opacity: 0.7,
-  },
-  linkButton: {
-    flexDirection: 'row',
-    paddingHorizontal: Spacing.four,
-    paddingVertical: Spacing.two,
-    borderRadius: Spacing.five,
-    justifyContent: 'center',
-    gap: Spacing.one,
-    alignItems: 'center',
-  },
-  sectionsWrapper: {
-    gap: Spacing.five,
-    paddingHorizontal: Spacing.four,
-    paddingTop: Spacing.three,
-  },
-  collapsibleContent: {
-    alignItems: 'center',
-  },
-  imageTutorial: {
-    width: '100%',
-    aspectRatio: 296 / 171,
-    borderRadius: Spacing.three,
-    marginTop: Spacing.two,
-  },
-  imageReact: {
-    width: 100,
-    height: 100,
-    alignSelf: 'center',
   },
 });

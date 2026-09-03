@@ -1,14 +1,12 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
 import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
 import { ScreenBackground } from '@/components/screen-background';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { WebBadge } from '@/components/web-badge';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import * as Device from 'expo-device';
+import { router } from 'expo-router';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 function getDevMenuHint() {
   if (Platform.OS === 'web') {
@@ -38,23 +36,21 @@ export default function HomeScreen() {
           <ThemedText type="title" style={styles.title}>
             Welcome to&nbsp;Taboom!
           </ThemedText>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={`Play`}
+              onPress={() => { router.push('/game') }}
+              style={({ pressed }) => [
+                styles.resetButton,
+                pressed && styles.resetButtonPressed,
+              ]}
+            >
+              <Text style={styles.resetButtonText}>Play</Text>
+            </Pressable>
         </View>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+
 
         {Platform.OS === 'web' && <WebBadge />}
       </SafeAreaView>
@@ -96,5 +92,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.four,
     borderRadius: Spacing.four,
+  },
+  resetButton: {
+    backgroundColor: "#3a86ff",
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 22,
+    shadowColor: "#3a86ff",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  resetButtonPressed: {
+    opacity: 0.85,
+    transform: [{ translateY: 1 }],
+  },
+  resetButtonText: {
+    color: "white",
+    fontSize: 14,
+    fontWeight: "700",
+    letterSpacing: 0.3,
+  },
+  pressed: {
+    opacity: 0.7,
   },
 });
