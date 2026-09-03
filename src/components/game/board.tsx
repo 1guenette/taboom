@@ -345,6 +345,45 @@ export default function Board() {
     }
   }
 
+  function displayReplay(){
+    if(exploding){
+      return (<Pressable
+            onPress={handleReset}
+            style={({ pressed }) => [
+              styles.resetButton,
+              pressed && styles.resetButtonPressed,
+            ]}
+          >
+            <Text style={styles.resetButtonText}>Replay</Text>
+          </Pressable>)
+  }
+  else if (levelWin){
+          return (<Pressable
+            onPress={handleReset}
+            style={({ pressed }) => [
+              styles.resetButton,
+              pressed && styles.resetButtonPressed,
+            ]}
+          >
+            <Text style={styles.resetButtonText}>Next Level</Text>
+          </Pressable>)
+  }
+
+
+}
+
+  function displayLevel(){
+
+      return ( <Pressable
+            style={({ pressed }) => [
+              styles.resetButton,
+              pressed && styles.resetButtonPressed,
+            ]}
+          >
+            <Text style={styles.resetButtonText}>Level 1</Text>
+          </Pressable>)
+  }
+
   return (
     <View style={styles.game}>
       <View style={styles.boardPanel}>
@@ -427,15 +466,7 @@ export default function Board() {
         </View>
 
         <View style={styles.buttonRow}>
-          <Pressable
-            onPress={handleReset}
-            style={({ pressed }) => [
-              styles.resetButton,
-              pressed && styles.resetButtonPressed,
-            ]}
-          >
-            <Text style={styles.resetButtonText}>Replay</Text>
-          </Pressable>
+          {displayReplay()}
           {/* <Pressable
             onPress={handleLose}
             style={({ pressed }) => [
