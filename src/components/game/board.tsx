@@ -455,7 +455,7 @@ export default function Board() {
             <Text style={styles.resetButtonText}>Confetti</Text>
           </Pressable>
 */}
-          <Pressable
+          {/* <Pressable
             onPress={()=>{timerRef.current?.pauseGame()}}
             style={({ pressed }) => [
               styles.resetButton,
@@ -463,7 +463,7 @@ export default function Board() {
             ]}
           >
             <Text style={styles.resetButtonText}>Pause</Text>
-          </Pressable> 
+          </Pressable>  */}
         </View>
       </View>
     </View>

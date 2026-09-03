@@ -5,13 +5,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ScreenBackground } from '@/components/screen-background';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+import { BottomTabInset, MaxContentWidth, Spacing, Surface } from '@/constants/theme';
 
 const LEVELS = Array.from({ length: 10 }, (_, index) => ({
   level: index + 1,
-  score: 0,
+  score: index == 0 ? 0 : null,
   locked: index == 0 ? true : false
 }));
 
@@ -21,8 +19,6 @@ export default function TabTwoScreen() {
     ...safeAreaInsets,
     bottom: safeAreaInsets.bottom + BottomTabInset + Spacing.three,
   };
-  const theme = useTheme();
-
   const contentPlatformStyle = Platform.select({
     android: {
       paddingTop: insets.top,
@@ -47,48 +43,62 @@ export default function TabTwoScreen() {
             <ThemedText type="subtitle">Levels</ThemedText>
           </View>
 
-          <ThemedView type="backgroundElement" style={styles.table}>
+          <View style={styles.table}>
             <View style={[styles.row, styles.headerRow]}>
-              <ThemedText type="smallBold" style={styles.levelCell}>
+              <ThemedText type="smallBold" style={[styles.levelCell, styles.headerText]}>
                 Level
               </ThemedText>
-              <ThemedText type="smallBold" style={styles.scoreCell}>
+              <ThemedText type="smallBold" style={[styles.scoreCell, styles.headerText]}>
                 Score
               </ThemedText>
               <View style={styles.playCell}>
-                <ThemedText type="smallBold" style={styles.playHeader}>
+                <ThemedText type="smallBold" style={[styles.playHeader, styles.headerText]}>
                   Play
                 </ThemedText>
               </View>
             </View>
 
             {LEVELS.map((entry, i) => {
-             
-              const img = i == 0 ? 'play_arrow' : 'lock'
-              const img_ios = i == 0 ? 'play.fill' : 'lock'
+              const unlocked = i == 0
+              const img = unlocked ? 'play_arrow' : 'lock'
+              const img_ios = unlocked ? 'play.fill' : 'lock'
               return (
-              <View key={entry.level} style={styles.row}>
-                <ThemedText style={styles.levelCell}>{entry.level}</ThemedText>
-                <ThemedText style={styles.scoreCell}>{entry.score}</ThemedText>
+              <View
+                key={entry.level}
+                style={[
+                  styles.row,
+                  i % 2 == 1 && styles.rowAlt,
+                  i == LEVELS.length - 1 && styles.rowLast,
+                ]}>
+                <ThemedText style={[styles.levelCell, styles.cellText]}>{entry.level}</ThemedText>
+                <ThemedText style={[styles.scoreCell, styles.scoreText]}>{entry.score}</ThemedText>
                 <View style={styles.playCell}>
                   <Pressable
                     accessibilityRole="button"
                     accessibilityLabel={`Play level ${entry.level}`}
                     onPress={() => router.push('/game')}
                     style={({ pressed }) => pressed && styles.pressed}>
-                    <ThemedView type="backgroundSelected" style={styles.playButtonInner}>
+                    <View
+                      style={[
+                        styles.playButtonInner,
+                        unlocked ? styles.playButtonUnlocked : styles.playButtonLocked,
+                      ]}>
                       <SymbolView
-                        tintColor={theme.text}
+                        tintColor={unlocked ? Surface.text : Surface.textSecondary}
                         name={{ ios: img_ios, android: img, web: img }}
                         size={14}
                       />
-                      <ThemedText type="smallBold">Play</ThemedText>
-                    </ThemedView>
+                      <ThemedText
+                        type="smallBold"
+                        style={unlocked ? styles.playLabel : styles.playLabelLocked}>
+                        Play
+                      </ThemedText>
+                    </View>
                   </Pressable>
                 </View>
               </View>
             )})}
-          </ThemedView>
+          </View>
         </View>
       </ScrollView>
     </ScreenBackground>
@@ -117,6 +127,9 @@ const styles = StyleSheet.create({
   table: {
     borderRadius: Spacing.three,
     overflow: 'hidden',
+    backgroundColor: Surface.element,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: Surface.border,
   },
   row: {
     flexDirection: 'row',
@@ -124,10 +137,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.two,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(128, 128, 128, 0.35)',
+    borderBottomColor: Surface.border,
+  },
+  rowAlt: {
+    backgroundColor: Surface.accentMuted,
+  },
+  rowLast: {
+    borderBottomWidth: 0,
   },
   headerRow: {
     paddingVertical: Spacing.three,
+    backgroundColor: Surface.elementHeader,
+  },
+  headerText: {
+    color: Surface.textSecondary,
+    textTransform: 'uppercase',
+    letterSpacing: 0.6,
+  },
+  cellText: {
+    color: Surface.text,
+  },
+  scoreText: {
+    color: Surface.textSecondary,
   },
   levelCell: {
     flex: 1,
@@ -151,6 +182,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.one,
     borderRadius: Spacing.five,
+  },
+  playButtonUnlocked: {
+    backgroundColor: Surface.accent,
+  },
+  playButtonLocked: {
+    backgroundColor: Surface.accentMuted,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: Surface.border,
+  },
+  playLabel: {
+    color: Surface.text,
+  },
+  playLabelLocked: {
+    color: Surface.textSecondary,
   },
   pressed: {
     opacity: 0.7,

@@ -9,7 +9,7 @@ import { Platform } from 'react-native';
 
 export const Colors = {
   light: {
-    text: '#000000',
+    text: '#ffffff',
     background: '#ffffff',
     backgroundElement: '#F0F0F3',
     backgroundSelected: '#E0E1E6',
@@ -25,6 +25,20 @@ export const Colors = {
 } as const;
 
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
+
+/**
+ * Surfaces drawn on top of the fixed navy `BackgroundGradient`, so they stay the
+ * same in both light and dark mode.
+ */
+export const Surface = {
+  element: '#232d58',
+  elementHeader: '#2b3767',
+  accent: '#4a5fd0',
+  accentMuted: 'rgba(148, 163, 214, 0.14)',
+  border: 'rgba(148, 163, 214, 0.28)',
+  text: '#eef1fb',
+  textSecondary: '#a3aed6',
+} as const;
 
 export const Fonts = Platform.select({
   ios: {

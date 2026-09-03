@@ -5,6 +5,9 @@ import { Colors } from '@/constants/theme';
 
 export default function AppTabs() {
   const scheme = useColorScheme();
+
+  console.log(scheme === 'unspecified')
+  console.log(scheme === 'unspecified')
   const colors = Colors[scheme === 'unspecified' ? 'light' : scheme];
 
   return (
@@ -30,7 +33,7 @@ export default function AppTabs() {
 
 
       <NativeTabs.Trigger name="game">
-        <NativeTabs.Trigger.Label>game</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>Account</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
           src={require('@/assets/images/tabIcons/explore.png')}
           renderingMode="template"
