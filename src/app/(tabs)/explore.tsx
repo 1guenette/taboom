@@ -5,13 +5,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ScreenBackground } from '@/components/screen-background';
 import { ThemedText } from '@/components/themed-text';
+import { LEVELS_BETA } from '@/constants/levels';
 import { BottomTabInset, MaxContentWidth, Spacing, Surface } from '@/constants/theme';
-
-const LEVELS = Array.from({ length: 10 }, (_, index) => ({
+const LEVELS = LEVELS_BETA.map( (levelInfo, index) => {
+  return {
   level: index + 1,
   score: index == 0 ? 0 : null,
-  locked: index == 0 ? true : false
-}));
+  locked: index == 0 ? false : true
+  }
+});
 
 export default function TabTwoScreen() {
   const safeAreaInsets = useSafeAreaInsets();
@@ -59,9 +61,8 @@ export default function TabTwoScreen() {
             </View>
 
             {LEVELS.map((entry, i) => {
-              const unlocked = i == 0
-              const img = unlocked ? 'play_arrow' : 'lock'
-              const img_ios = unlocked ? 'play.fill' : 'lock'
+              const img = entry.locked ? 'lock' : 'play_arrow'
+              const img_ios = entry.locked ? 'lock' : 'play.fill'
               return (
               <View
                 key={entry.level}
@@ -74,23 +75,24 @@ export default function TabTwoScreen() {
                 <ThemedText style={[styles.scoreCell, styles.scoreText]}>{entry.score}</ThemedText>
                 <View style={styles.playCell}>
                   <Pressable
+                    disabled={entry.locked}
                     accessibilityRole="button"
                     accessibilityLabel={`Play level ${entry.level}`}
-                    onPress={() => router.push('/game')}
+                    onPress={() => router.push(`/levels/${entry.level}`)}
                     style={({ pressed }) => pressed && styles.pressed}>
                     <View
                       style={[
                         styles.playButtonInner,
-                        unlocked ? styles.playButtonUnlocked : styles.playButtonLocked,
+                        !entry.locked ? styles.playButtonUnlocked : styles.playButtonLocked,
                       ]}>
                       <SymbolView
-                        tintColor={unlocked ? Surface.text : Surface.textSecondary}
+                        tintColor={!entry.locked ? Surface.text : Surface.textSecondary}
                         name={{ ios: img_ios, android: img, web: img }}
                         size={14}
                       />
                       <ThemedText
                         type="smallBold"
-                        style={unlocked ? styles.playLabel : styles.playLabelLocked}>
+                        style={!entry.locked ? styles.playLabel : styles.playLabelLocked}>
                         Play
                       </ThemedText>
                     </View>

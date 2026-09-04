@@ -1,0 +1,122 @@
+export const LEVELS_BETA = [
+  {
+    "level": 1,
+    "durationSetting": 15000,
+    "resetTimerSetting": true,
+    "refillGridSetting": false,
+    "colorBoxSetting": false,
+    "textColorSetting": false,
+    "gridLengthSetting": 3,
+    "bombSetting": false,
+    "blendInSetting": false,
+    "combeLength": 5
+  },
+  {
+    "level": 2,
+    "durationSetting": 13000,
+    "resetTimerSetting": true,
+    "refillGridSetting": true,
+    "colorBoxSetting": false,
+    "textColorSetting": false,
+    "gridLengthSetting": 3,
+    "bombSetting": false,
+    "blendInSetting": false,
+    "combeLength": 5
+  },
+  {
+    "level": 3,
+    "durationSetting": 12000,
+    "resetTimerSetting": true,
+    "refillGridSetting": true,
+    "colorBoxSetting": true,
+    "textColorSetting": false,
+    "gridLengthSetting": 4,
+    "bombSetting": false,
+    "blendInSetting": false,
+    "combeLength": 7
+  },
+  {
+    "level": 4,
+    "durationSetting": 11000,
+    "resetTimerSetting": true,
+    "refillGridSetting": true,
+    "colorBoxSetting": true,
+    "textColorSetting": true,
+    "gridLengthSetting": 4,
+    "bombSetting": false,
+    "blendInSetting": false,
+    "combeLength": 7
+  },
+  {
+    "level": 5,
+    "durationSetting": 10000,
+    "resetTimerSetting": true,
+    "refillGridSetting": true,
+    "colorBoxSetting": true,
+    "textColorSetting": true,
+    "gridLengthSetting": 4,
+    "bombSetting": true,
+    "blendInSetting": false,
+    "combeLength": 7
+  },
+  {
+    "level": 6,
+    "durationSetting": 9000,
+    "resetTimerSetting": true,
+    "refillGridSetting": true,
+    "colorBoxSetting": true,
+    "textColorSetting": true,
+    "gridLengthSetting": 5,
+    "bombSetting": true,
+    "blendInSetting": false,
+    "combeLength": 5
+  },
+  {
+    "level": 7,
+    "durationSetting": 8000,
+    "resetTimerSetting": false,
+    "refillGridSetting": true,
+    "colorBoxSetting": true,
+    "textColorSetting": true,
+    "gridLengthSetting": 5,
+    "bombSetting": true,
+    "blendInSetting": false,
+    "combeLength": 5
+  },
+  {
+    "level": 8,
+    "durationSetting": 8000,
+    "resetTimerSetting": false,
+    "refillGridSetting": true,
+    "colorBoxSetting": true,
+    "textColorSetting": true,
+    "gridLengthSetting": 5,
+    "bombSetting": true,
+    "blendInSetting": true,
+    "combeLength": 7
+  },
+  {
+    "level": 9,
+    "durationSetting": 10000,
+    "resetTimerSetting": false,
+    "refillGridSetting": true,
+    "colorBoxSetting": true,
+    "textColorSetting": true,
+    "gridLengthSetting": 5,
+    "bombSetting": true,
+    "blendInSetting": true,
+    "combeLength": 8
+  },
+  {
+    "level": 9,
+    "durationSetting": 5000,
+    "resetTimerSetting": false,
+    "refillGridSetting": true,
+    "colorBoxSetting": true,
+    "textColorSetting": true,
+    "gridLengthSetting": 5,
+    "bombSetting": true,
+    "blendInSetting": true,
+    "combeLength": 8
+  }
+]

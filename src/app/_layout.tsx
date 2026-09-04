@@ -11,6 +11,8 @@ export default function TabLayout() {
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="game" options={{ headerShown: false, presentation: 'card' }} />
+      <Stack.Screen name="levels/[id]" options={{ headerShown: false, presentation: 'card' }} />
+
     </Stack>
   );
 }
