@@ -355,6 +355,11 @@ export default function Board() {
     }
   }
 
+  function handleNextLevel(){
+    //TODO update storage logic
+    router.push(`/levels/${level+1}`)
+  }
+
   function displayReplay(){
     if(exploding){
       return ([<Pressable
@@ -382,7 +387,7 @@ export default function Board() {
   else if (levelWin){
           return (<Pressable
           key="wnext-level-key"
-            onPress={handleReset}
+            onPress={()=>router.push(`/levels/${level+1}`)}
             style={({ pressed }) => [
               styles.resetButton,
               pressed && styles.resetButtonPressed,
@@ -394,6 +399,8 @@ export default function Board() {
 
 
 }
+
+
 
   function displayLevel(){
 
@@ -409,7 +416,13 @@ export default function Board() {
 
   return (
     <View style={styles.game}>
+      <Animated.Text>
+                    <Text style={styles.status}>
+                    Level {level}
+                    </Text>
+                 </Animated.Text>
       <View style={styles.boardPanel}>
+        
         <Text style={styles.status}>{[displayCombo()]}</Text>
 
         {/* Both slots keep their height even while empty, so the board stays
