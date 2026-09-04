@@ -1,11 +1,14 @@
-import { useIsFocused } from 'expo-router';
-import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { router, useIsFocused } from 'expo-router';
+import { SymbolView } from 'expo-symbols';
+import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import Board from '@/components/game/board';
 import { ScreenBackground } from '@/components/screen-background';
 
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { BottomTabInset, MaxContentWidth, Spacing, Surface } from '@/constants/theme';
+
+const BACK_BUTTON_SIZE = 44;
 
 
 export default function Game() {
@@ -33,6 +36,25 @@ export default function Game() {
 
   return (
     <ScreenBackground>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Go back"
+        onPress={() => router.back()}
+        style={({ pressed }) => [
+          styles.backButton,
+          {
+            top: Platform.OS === 'web' ? Spacing.three : insets.top + Spacing.two,
+            left: Platform.OS === 'web' ? Spacing.three : insets.left + Spacing.two,
+          },
+          pressed && styles.backButtonPressed,
+        ]}>
+        <SymbolView
+          name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }}
+          size={22}
+          weight="bold"
+          tintColor={Surface.text}
+        />
+      </Pressable>
       <ScrollView
         style={styles.scrollView}
         contentInset={insets}
@@ -52,6 +74,21 @@ export default function Game() {
 }
 
 const styles = StyleSheet.create({
+  backButton: {
+    position: 'absolute',
+    zIndex: 1,
+    width: BACK_BUTTON_SIZE,
+    height: BACK_BUTTON_SIZE,
+    borderRadius: BACK_BUTTON_SIZE / 2,
+    backgroundColor: Surface.element,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: Surface.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backButtonPressed: {
+    opacity: 0.7,
+  },
   scrollView: {
     flex: 1,
     backgroundColor: 'transparent',
