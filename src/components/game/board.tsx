@@ -403,9 +403,13 @@ export default function Board() {
       <View style={styles.boardPanel}>
         <Text style={styles.status}>{[displayCombo()]}</Text>
 
-        {displayTimer()}
-        {displayGameOver()}
-        {displayWinSign()}
+        {/* Both slots keep their height even while empty, so the board stays
+            put whether the timer is running or a win/lose message is showing. */}
+        <View style={styles.timerSlot}>{displayTimer()}</View>
+        <View style={styles.messageSlot}>
+          {displayGameOver()}
+          {displayWinSign()}
+        </View>
 
         <View style={styles.boardWrap}>
           {
@@ -516,6 +520,8 @@ export default function Board() {
 }
 
 const SQUARE_SIZE = 76;
+const TIMER_SLOT_HEIGHT = 28;
+const MESSAGE_SLOT_HEIGHT = 32;
 
 const styles = StyleSheet.create({
   game: {
@@ -531,9 +537,18 @@ const styles = StyleSheet.create({
   },
   status: {
     fontSize: 25,
+    lineHeight: MESSAGE_SLOT_HEIGHT,
     fontWeight: "700",
     color: "#e8eaf6",
     letterSpacing: 0.4,
+  },
+  timerSlot: {
+    height: TIMER_SLOT_HEIGHT,
+    justifyContent: "center",
+  },
+  messageSlot: {
+    height: MESSAGE_SLOT_HEIGHT,
+    justifyContent: "center",
   },
   statusWin: {
     fontSize: 20,
