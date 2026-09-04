@@ -1,6 +1,6 @@
+import { LEVELS_BETA } from "@/constants/levels";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-
-import { router } from "expo-router";
 import {
   Animated,
   Easing,
@@ -12,7 +12,6 @@ import {
 import { makeConfetti, makeSquareBlasts, runBlastAnimations, runConfettiAnimations } from "../graphics/blastStyle";
 import Square from "./square";
 import Timer from "./timer";
-
 
 
 // NOTE: requires `expo install expo-linear-gradient`
@@ -98,6 +97,7 @@ export default function Board() {
 
   
   //Explosion graphics variables
+  const { id } = useLocalSearchParams();
   const [exploding, setExploding] = useState(false);
   const [useConfetti, setUseConfetti] = useState(false);
   const [blasts, setBlasts] = useState<BlastData[]>([]);
@@ -105,7 +105,7 @@ export default function Board() {
   const pulseAnim = useRef(new Animated.Value(0)).current;
 
   //Game session tracking
-  const [level, setLevel] = useState<number>(1)
+  const [level, setLevel] = useState<number>(Number(id))
   const [numberRange, setNumberRange] = useState<number>(10)
   
   //Grid
@@ -117,14 +117,15 @@ export default function Board() {
   const [started, setStarted] = useState<boolean>(true) //Needed? Delete later
   
   //Difficulty settings
-  const [durationSetting, setDurationSetting] = useState<number>(10000)
-  const [resetTimerSeting, setResetTimerSetting] = useState<boolean>(true)
-  const [refillGridSetting, setRefillGrid] = useState<boolean>(true)
-  const [colorBoxSetting, setColorBoxSetting] = useState<boolean>(true)
-  const [textColorSetting, setTextColorSetting] = useState<boolean>(true) //combine with colorBoxSetting? 
-  const [gridLengthSetting, setGridLengthSetting] = useState<number>(4)
-  const [bombSetting, setBombSetting] = useState<boolean>(true)
-  const [blendInSetting, setBlendInSetting] = useState<boolean>(false)
+  const level_Settings = LEVELS_BETA[level]
+  const [durationSetting, setDurationSetting] = useState<number>(level_Settings.durationSetting)
+  const [resetTimerSeting, setResetTimerSetting] = useState<boolean>(level_Settings.resetTimerSetting)
+  const [refillGridSetting, setRefillGrid] = useState<boolean>(level_Settings.refillGridSetting)
+  const [colorBoxSetting, setColorBoxSetting] = useState<boolean>(level_Settings.colorBoxSetting)
+  const [textColorSetting, setTextColorSetting] = useState<boolean>(level_Settings.textColorSetting) //combine with colorBoxSetting? 
+  const [gridLengthSetting, setGridLengthSetting] = useState<number>(level_Settings.gridLengthSetting)
+  const [bombSetting, setBombSetting] = useState<boolean>(level_Settings.bombSetting)
+  const [blendInSetting, setBlendInSetting] = useState<boolean>(level_Settings.blendInSetting)
 
   //-----------------------
   const [squares, setSquares] = useState<BoxEntry[]>(()=>fillGrid(gridLengthSetting, combo, bombSetting, blendInSetting));
@@ -217,21 +218,29 @@ export default function Board() {
       //   flagLoc.push(locExists)
       // }
     }
-    console.log("----------------")
-    console.log(arr)
     return arr
   }
 
   function displayCombo(){
-    return combo.map((v, i)=>{return <Text key={i} style={{"color": BUTTON_TEXT_COLORS[v.textColor] }}>{v.number}</Text>})
+    return combo.map((v, i)=>{return <Text key={i} style={{"color": textColorSetting ? BUTTON_TEXT_COLORS[v.textColor] : "white" }}>{v.number}</Text>})
   }
   
 
 
+  function getMatchConditional(value: BoxEntry, nextVal: BoxEntry){
+    if(textColorSetting  == true){
+      return value.number == nextVal.number && value.textColor == nextVal.textColor
+    }
+    return value.number == nextVal.number
+  }
 
   function handleSquareClick(i: BoxEntry) {
   if (combo.length > 0) {
-    if (i.number === combo[0].number && (textColorSetting == true && i.textColor == combo[0].textColor)) {
+    console.log(i.number === combo[0].number)
+    console.log((textColorSetting == true && i.textColor == combo[0].textColor))
+    
+    
+    if (getMatchConditional(i, combo[0])) {
       const update = combo.slice(1)
       setCombo(update)
       
@@ -350,7 +359,7 @@ export default function Board() {
     if(exploding){
       return ([<Pressable
             key="reset-key"
-            onPress={()=>router.back()}
+            onPress={()=> router.canGoBack() ? router.back() : router.push("/explore")}
             style={({ pressed }) => [
               styles.resetButton,
               pressed && styles.resetButtonPressed,
