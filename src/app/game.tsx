@@ -43,7 +43,7 @@ export default function Game() {
         </ThemedView> */}
 
           <View style={styles.sectionsWrapper}>
-            {isFocused && <Board />}
+            <Board />
           </View>
         </View>
       </ScrollView>

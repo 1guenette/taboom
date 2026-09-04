@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
+import { router } from "expo-router";
 import {
   Animated,
   Easing,
@@ -347,7 +348,18 @@ export default function Board() {
 
   function displayReplay(){
     if(exploding){
-      return (<Pressable
+      return ([<Pressable
+            key="reset-key"
+            onPress={()=>router.back()}
+            style={({ pressed }) => [
+              styles.resetButton,
+              pressed && styles.resetButtonPressed,
+            ]}
+          >
+            <Text style={styles.resetButtonText}>Back</Text>
+          </Pressable>, 
+          <Pressable
+          key="replay-key"
             onPress={handleReset}
             style={({ pressed }) => [
               styles.resetButton,
@@ -355,10 +367,12 @@ export default function Board() {
             ]}
           >
             <Text style={styles.resetButtonText}>Replay</Text>
-          </Pressable>)
+          </Pressable>]
+          )
   }
   else if (levelWin){
           return (<Pressable
+          key="wnext-level-key"
             onPress={handleReset}
             style={({ pressed }) => [
               styles.resetButton,
