@@ -106,10 +106,11 @@ export default function Board() {
 
   //Game session tracking
   const [level, setLevel] = useState<number>(Number(id))
+  const level_Settings = LEVELS_BETA[level]
   const [numberRange, setNumberRange] = useState<number>(10)
   
   //Grid
-  const [levelCombo, setLevelCombo] = useState<BoxEntry[]>([{number: 1, textColor: 0, boxColor: 2},{number: 2, textColor: 1, boxColor: 0},{number: 3, textColor: 6, boxColor:4}])
+  const [levelCombo, setLevelCombo] = useState<BoxEntry[]>(generateCombo(level_Settings))
   const [combo, setCombo] = useState<BoxEntry[]>(levelCombo)
   
   const [levelWin, setLevelWin] = useState<boolean>(false)
@@ -117,7 +118,7 @@ export default function Board() {
   const [started, setStarted] = useState<boolean>(true) //Needed? Delete later
   
   //Difficulty settings
-  const level_Settings = LEVELS_BETA[level]
+
   const [durationSetting, setDurationSetting] = useState<number>(level_Settings.durationSetting)
   const [resetTimerSeting, setResetTimerSetting] = useState<boolean>(level_Settings.resetTimerSetting)
   const [refillGridSetting, setRefillGrid] = useState<boolean>(level_Settings.refillGridSetting)
@@ -161,6 +162,23 @@ export default function Board() {
     return () => loop.stop();
   }, [pulseAnim]);
 
+  function generateCombo(levelSettings: any){
+    return Array(levelSettings.comboLength).fill(0).map(()=>{
+      let entry: BoxEntry = {
+        number: Math.floor(Math.random()*10), 
+        textColor: Math.floor(Math.random()*BUTTON_TEXT_COLORS.length) , 
+        boxColor: Math.floor(Math.random()*BUTTON_COLORS.length)
+      }
+      if(!levelSettings.blendInSetting){
+        while(entry.textColor == entry.boxColor){
+          entry.boxColor = Math.floor(Math.random()*BUTTON_COLORS.length)
+        }
+      }
+      return entry
+      
+    })
+  }
+
 
   function fillGrid(rowSize: number, comboVal: BoxEntry[], bombSetting: boolean, blendTextSetting: boolean) {
 
@@ -185,38 +203,20 @@ export default function Board() {
         arr[bombLoc].number = 'bomb'
       }
     }
-    
-    /**
-     * TODO: Add non-number graphics here
-     */
-
-    //----------------------------------------
-
 
     let flagLoc: number[] = []
 
-    //Fill grid with valid number values
+    //Fill grid with valid combo number values
     while (comboList.length !== 0) {
       let val: BoxEntry = comboList.shift()!
       let loc: number = Math.floor(Math.random() * rowSize * rowSize)
 
-      // let locExists;
-      // locExists = arr.findIndex(n => n.number === val.number && n.textColor == val.textColor)
-      
-      
-      // if (locExists === -1) {
-
-        //find valid location (that isn't already filled with valid value)
         while (flagLoc.includes(loc)) {
           loc = Math.floor(Math.random() * rowSize * rowSize)
         }
         flagLoc.push(loc)
         arr[loc] = val
 
-      // }
-      // else {
-      //   flagLoc.push(locExists)
-      // }
     }
     return arr
   }

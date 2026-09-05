@@ -9,7 +9,8 @@ export const LEVELS_BETA = [
     "gridLengthSetting": 3,
     "bombSetting": false,
     "blendInSetting": false,
-    "combeLength": 5
+    "comboLength": 3,
+    "combo": [1,2,3]
   },
   {
     "level": 2,
@@ -21,7 +22,7 @@ export const LEVELS_BETA = [
     "gridLengthSetting": 3,
     "bombSetting": false,
     "blendInSetting": false,
-    "combeLength": 5
+    "comboLength": 5
   },
   {
     "level": 3,
@@ -33,7 +34,7 @@ export const LEVELS_BETA = [
     "gridLengthSetting": 4,
     "bombSetting": false,
     "blendInSetting": false,
-    "combeLength": 7
+    "comboLength": 7
   },
   {
     "level": 4,
@@ -45,7 +46,7 @@ export const LEVELS_BETA = [
     "gridLengthSetting": 4,
     "bombSetting": false,
     "blendInSetting": false,
-    "combeLength": 7
+    "comboLength": 7
   },
   {
     "level": 5,
@@ -57,7 +58,7 @@ export const LEVELS_BETA = [
     "gridLengthSetting": 4,
     "bombSetting": true,
     "blendInSetting": false,
-    "combeLength": 7
+    "comboLength": 7
   },
   {
     "level": 6,
@@ -69,7 +70,7 @@ export const LEVELS_BETA = [
     "gridLengthSetting": 5,
     "bombSetting": true,
     "blendInSetting": false,
-    "combeLength": 5
+    "comboLength": 5
   },
   {
     "level": 7,
@@ -81,7 +82,7 @@ export const LEVELS_BETA = [
     "gridLengthSetting": 5,
     "bombSetting": true,
     "blendInSetting": false,
-    "combeLength": 5
+    "comboLength": 5
   },
   {
     "level": 8,
@@ -93,7 +94,7 @@ export const LEVELS_BETA = [
     "gridLengthSetting": 5,
     "bombSetting": true,
     "blendInSetting": true,
-    "combeLength": 7
+    "comboLength": 7
   },
   {
     "level": 9,
@@ -105,7 +106,7 @@ export const LEVELS_BETA = [
     "gridLengthSetting": 5,
     "bombSetting": true,
     "blendInSetting": true,
-    "combeLength": 8
+    "comboLength": 8
   },
   {
     "level": 9,
@@ -117,6 +118,6 @@ export const LEVELS_BETA = [
     "gridLengthSetting": 5,
     "bombSetting": true,
     "blendInSetting": true,
-    "combeLength": 8
+    "comboLength": 8
   }
 ]
