@@ -39,7 +39,7 @@ export default function HomeScreen() {
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={`Play`}
-              onPress={() => { router.push('/levels/1') }}
+              onPress={() => { router.push('/game') }}
               style={({ pressed }) => [
                 styles.resetButton,
                 pressed && styles.resetButtonPressed,

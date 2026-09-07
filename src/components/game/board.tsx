@@ -97,7 +97,7 @@ export default function Board() {
 
   
   //Explosion graphics variables
-  const { id } = useLocalSearchParams();
+  const { id = 5 } = useLocalSearchParams();
   const [exploding, setExploding] = useState(false);
   const [useConfetti, setUseConfetti] = useState(false);
   const [blasts, setBlasts] = useState<BlastData[]>([]);
