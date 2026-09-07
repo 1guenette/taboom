@@ -1,7 +1,7 @@
 import Board from '@/components/game/board';
 import { ScreenBackground } from '@/components/screen-background';
 import { BottomTabInset, MaxContentWidth, Spacing, Surface } from '@/constants/theme';
-import { router, useIsFocused, useLocalSearchParams } from 'expo-router';
+import { router, useIsFocused } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -12,7 +12,7 @@ const BACK_BUTTON_SIZE = 44;
 export default function Game() {
   // Tab screens stay mounted after a blur, so the board is torn down whenever
   // the route loses focus and rebuilt from scratch on the next visit.
-  const { id, limit } = useLocalSearchParams();
+  
   const isFocused = useIsFocused();
   const safeAreaInsets = useSafeAreaInsets();
   const insets = {
@@ -38,7 +38,7 @@ export default function Game() {
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Go back"
-        onPress={() =>  router.canGoBack() ? router.back() : router.push("/explore")}
+        onPress={() =>  router.push("/explore")}
         style={({ pressed }) => [
           styles.backButton,
           {
