@@ -53,3 +53,7 @@ Level Variables:
    color_levers: False,
    wrongReset: False
 }
+
+
+
+ npx expo export -p web

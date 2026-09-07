@@ -2,7 +2,7 @@ export const LEVELS_BETA = [
   {
     "level": 1,
     "durationSetting": 15000,
-    "resetTimerSetting": true,
+    "resetTimerSetting": false,
     "refillGridSetting": false,
     "colorBoxSetting": false,
     "textColorSetting": false,
@@ -14,6 +14,42 @@ export const LEVELS_BETA = [
   },
   {
     "level": 2,
+    "durationSetting": 15000,
+    "resetTimerSetting": false,
+    "refillGridSetting": false,
+    "colorBoxSetting": false,
+    "textColorSetting": false,
+    "gridLengthSetting": 3,
+    "bombSetting": false,
+    "blendInSetting": false,
+    "comboLength": 4
+  },
+  {
+    "level": 3,
+    "durationSetting": 15000,
+    "resetTimerSetting": false,
+    "refillGridSetting": false,
+    "colorBoxSetting": false,
+    "textColorSetting": false,
+    "gridLengthSetting": 4,
+    "bombSetting": false,
+    "blendInSetting": false,
+    "comboLength": 5
+  },
+  {
+    "level": 4,
+    "durationSetting": 15000,
+    "resetTimerSetting": true,
+    "refillGridSetting": true,
+    "colorBoxSetting": false,
+    "textColorSetting": false,
+    "gridLengthSetting": 4,
+    "bombSetting": false,
+    "blendInSetting": false,
+    "comboLength": 5
+  },
+  {
+    "level": 5,
     "durationSetting": 13000,
     "resetTimerSetting": true,
     "refillGridSetting": true,
@@ -25,7 +61,7 @@ export const LEVELS_BETA = [
     "comboLength": 5
   },
   {
-    "level": 3,
+    "level": 6,
     "durationSetting": 12000,
     "resetTimerSetting": true,
     "refillGridSetting": true,
@@ -37,7 +73,7 @@ export const LEVELS_BETA = [
     "comboLength": 7
   },
   {
-    "level": 4,
+    "level": 7,
     "durationSetting": 11000,
     "resetTimerSetting": true,
     "refillGridSetting": true,
@@ -49,7 +85,7 @@ export const LEVELS_BETA = [
     "comboLength": 7
   },
   {
-    "level": 5,
+    "level": 8,
     "durationSetting": 10000,
     "resetTimerSetting": true,
     "refillGridSetting": true,
@@ -61,7 +97,7 @@ export const LEVELS_BETA = [
     "comboLength": 7
   },
   {
-    "level": 6,
+    "level": 9,
     "durationSetting": 9000,
     "resetTimerSetting": true,
     "refillGridSetting": true,
@@ -73,7 +109,7 @@ export const LEVELS_BETA = [
     "comboLength": 5
   },
   {
-    "level": 7,
+    "level": 10,
     "durationSetting": 8000,
     "resetTimerSetting": false,
     "refillGridSetting": true,
@@ -85,7 +121,7 @@ export const LEVELS_BETA = [
     "comboLength": 5
   },
   {
-    "level": 8,
+    "level": 11,
     "durationSetting": 8000,
     "resetTimerSetting": false,
     "refillGridSetting": true,
@@ -97,7 +133,7 @@ export const LEVELS_BETA = [
     "comboLength": 7
   },
   {
-    "level": 9,
+    "level": 12,
     "durationSetting": 10000,
     "resetTimerSetting": false,
     "refillGridSetting": true,
@@ -109,7 +145,7 @@ export const LEVELS_BETA = [
     "comboLength": 8
   },
   {
-    "level": 9,
+    "level": 13,
     "durationSetting": 5000,
     "resetTimerSetting": false,
     "refillGridSetting": true,
