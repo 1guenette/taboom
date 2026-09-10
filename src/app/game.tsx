@@ -3,6 +3,7 @@ import { ScreenBackground } from '@/components/screen-background';
 import { BottomTabInset, MaxContentWidth, Spacing, Surface } from '@/constants/theme';
 import { router, useIsFocused } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
+import { useState } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -19,6 +20,19 @@ export default function Game() {
     ...safeAreaInsets,
     bottom: safeAreaInsets.bottom + BottomTabInset + Spacing.three,
   };
+
+  const [levelSettings, setLevelSettings] = useState  ({
+    "level": 1,
+    "durationSetting": 15000,
+    "resetTimerSetting": true,
+    "refillGridSetting": true,
+    "colorBoxSetting": true,
+    "textColorSetting": true,
+    "gridLengthSetting": 3,
+    "bombSetting": true,
+    "blendInSetting": false,
+    "comboLength": 5,
+  })
 
   const contentPlatformStyle = Platform.select({
     android: {
@@ -64,7 +78,7 @@ export default function Game() {
         </ThemedView> */}
 
           <View style={styles.sectionsWrapper}>
-            <Board />
+            <Board levelSettings={levelSettings} />
           </View>
         </View>
       </ScrollView>

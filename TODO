@@ -1,3 +1,4 @@
+Random game generation
 Level Logic
  -- Storage
  -- Next Level Button
@@ -5,7 +6,6 @@ Level Logic
 Fix blendin setting (level 2)
 Points logic
 Regression Test
-Random game generation
 //-------
 Score sharing, game session
 Accounts page

@@ -1,4 +1,3 @@
-import { LEVELS_BETA } from "@/constants/levels";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -92,8 +91,7 @@ interface BoxEntry {
     extension: "EXT",
   }
 
-export default function Board() {
-
+export default function Board({levelSettings}) {
 
   
   //Explosion graphics variables
@@ -105,8 +103,7 @@ export default function Board() {
   const pulseAnim = useRef(new Animated.Value(0)).current;
 
   //Game session tracking
-  const [level, setLevel] = useState<number>(Number(id))
-  const level_Settings = LEVELS_BETA[level]
+  const level_Settings = levelSettings
   const [numberRange, setNumberRange] = useState<number>(10)
   
   //Grid
@@ -119,25 +116,17 @@ export default function Board() {
   
   //Difficulty settings
 
-  const [durationSetting, setDurationSetting] = useState<number>(level_Settings.durationSetting)
-  const [resetTimerSeting, setResetTimerSetting] = useState<boolean>(level_Settings.resetTimerSetting)
-  const [refillGridSetting, setRefillGrid] = useState<boolean>(level_Settings.refillGridSetting)
-  const [colorBoxSetting, setColorBoxSetting] = useState<boolean>(level_Settings.colorBoxSetting)
-  const [textColorSetting, setTextColorSetting] = useState<boolean>(level_Settings.textColorSetting) //combine with colorBoxSetting? 
-  const [gridLengthSetting, setGridLengthSetting] = useState<number>(level_Settings.gridLengthSetting)
-  const [bombSetting, setBombSetting] = useState<boolean>(level_Settings.bombSetting)
-  const [blendInSetting, setBlendInSetting] = useState<boolean>(level_Settings.blendInSetting)
+  const [durationSetting, setDurationSetting] = useState<number>(levelSettings.durationSetting)
+
 
   //-----------------------
-  const [squares, setSquares] = useState<BoxEntry[]>(()=>fillGrid(gridLengthSetting, combo, bombSetting, blendInSetting));
+  const [squares, setSquares] = useState<BoxEntry[]>(()=>fillGrid(levelSettings.gridLengthSetting, combo, levelSettings.bombSetting, levelSettings.blendInSetting));
   
 
   
   //TODO settings
   const timerRef = useRef(null)  //Tracks timer component
  const [resetCount, setResetCount] = useState(0); //needed in key for fucking iOS compatibility 
-  const [comboColorMatchSetting, setComboColorMatchSetting] = useState<boolean>()
-  const [comboLength, setComboLength] = useState<number>(3)
 
 
   // Replaces the CSS `status-pulse` keyframe animation.
@@ -222,13 +211,13 @@ export default function Board() {
   }
 
   function displayCombo(){
-    return combo.map((v, i)=>{return <Text key={i} style={{"color": textColorSetting ? BUTTON_TEXT_COLORS[v.textColor] : "white" }}>{v.number}</Text>})
+    return combo.map((v, i)=>{return <Text key={i} style={{"color": levelSettings.textColorSetting ? BUTTON_TEXT_COLORS[v.textColor] : "white" }}>{v.number}</Text>})
   }
   
 
 
   function getMatchConditional(value: BoxEntry, nextVal: BoxEntry){
-    if(textColorSetting  == true){
+    if(levelSettings.textColorSetting  == true){
       return value.number == nextVal.number && value.textColor == nextVal.textColor
     }
     return value.number == nextVal.number
@@ -236,8 +225,6 @@ export default function Board() {
 
   function handleSquareClick(i: BoxEntry) {
   if (combo.length > 0) {
-    console.log(i.number === combo[0].number)
-    console.log((textColorSetting == true && i.textColor == combo[0].textColor))
     
     
     if (getMatchConditional(i, combo[0])) {
@@ -249,12 +236,12 @@ export default function Board() {
       } 
       else {
         
-        if (resetTimerSeting){
+        if (levelSettings.resetTimerSeting){
           timerRef.current?.resetTimer()
         }
 
-        if(refillGridSetting == true){
-          setSquares(fillGrid(gridLengthSetting, update, bombSetting, blendInSetting))
+        if(levelSettings.refillGridSetting == true){
+          setSquares(fillGrid(levelSettings.gridLengthSetting, update, levelSettings.bombSetting, levelSettings.blendInSetting))
         }
 
       }
@@ -290,11 +277,11 @@ export default function Board() {
     timerRef.current?.resetTimer()
     setStarted(true)
     setCombo(levelCombo)
-    setSquares(fillGrid(gridLengthSetting, levelCombo, bombSetting, blendInSetting));
+    setSquares(fillGrid(levelSettings.gridLengthSetting, levelCombo, levelSettings.bombSetting, levelSettings.blendInSetting));
   }
 
   function handleLose() {
-    const nextBlasts = makeSquareBlasts(gridLengthSetting**2);
+    const nextBlasts = makeSquareBlasts(levelSettings.gridLengthSetting**2);
     const nextConfetti = makeConfetti(colorsLose);
     setLevelWin(false)
     setBlasts(nextBlasts);
@@ -355,10 +342,6 @@ export default function Board() {
     }
   }
 
-  function handleNextLevel(){
-    //TODO update storage logic
-    router.push(`/levels/${level+1}`)
-  }
 
   function displayReplay(){
     if(exploding){
@@ -387,7 +370,7 @@ export default function Board() {
   else if (levelWin){
           return (<Pressable
           key="wnext-level-key"
-            onPress={()=>router.push(`/levels/${level+1}`)}
+            onPress={()=>router.push(`/levels/${levelSettings.level+1}`)}
             style={({ pressed }) => [
               styles.resetButton,
               pressed && styles.resetButtonPressed,
@@ -418,7 +401,7 @@ export default function Board() {
     <View style={styles.game}>
       <Animated.Text>
                     <Text style={styles.status}>
-                    Level {level}
+                    Level {levelSettings.level}
                     </Text>
                  </Animated.Text>
       <View style={styles.boardPanel}>
@@ -435,19 +418,19 @@ export default function Board() {
 
         <View style={styles.boardWrap}>
           {
-          [...Array(gridLengthSetting).keys()].map((row) => (
+          [...Array(levelSettings.gridLengthSetting).keys()].map((row) => (
             <View style={styles.boardRow} key={row}>
-              {[...Array(gridLengthSetting).keys()].map((col) => {
-                const i = row * gridLengthSetting + col;
+              {[...Array(levelSettings.gridLengthSetting).keys()].map((col) => {
+                const i = row * levelSettings.gridLengthSetting + col;
                 return (
                   <Square
                     key={`${i}-${resetCount}`}
                     value={squares[i]}
                     onSquareClick={() => handleSquareClick(squares[i])}
                     blast={exploding ? blasts[i] : null}
-                    colorEnabled={colorBoxSetting}
-                    textColorEnabled={textColorSetting}
-                    blendInSetting={blendInSetting}
+                    colorEnabled={levelSettings.colorBoxSetting}
+                    textColorEnabled={levelSettings.textColorSetting}
+                    blendInSetting={levelSettings.blendInSetting}
                   />
                 );
               })}

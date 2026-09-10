@@ -9,8 +9,7 @@ export const LEVELS_BETA = [
     "gridLengthSetting": 3,
     "bombSetting": false,
     "blendInSetting": false,
-    "comboLength": 3,
-    "combo": [1,2,3]
+    "comboLength": 3
   },
   {
     "level": 2,

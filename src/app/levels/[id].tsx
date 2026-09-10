@@ -1,8 +1,10 @@
 import Board from '@/components/game/board';
 import { ScreenBackground } from '@/components/screen-background';
+import { LEVELS_BETA } from "@/constants/levels";
 import { BottomTabInset, MaxContentWidth, Spacing, Surface } from '@/constants/theme';
-import { router, useIsFocused } from 'expo-router';
+import { router, useIsFocused, useLocalSearchParams } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
+import { useState } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -19,6 +21,12 @@ export default function Game() {
     ...safeAreaInsets,
     bottom: safeAreaInsets.bottom + BottomTabInset + Spacing.three,
   };
+
+  //-----GAME SESSION SETTINGS
+   const { id } = useLocalSearchParams();
+   const [level, setLevel] = useState<number>(Number(id))
+   
+   const level_Settings = LEVELS_BETA[level-1] //-1 since level attribute starts at 1
 
   const contentPlatformStyle = Platform.select({
     android: {
@@ -64,7 +72,7 @@ export default function Game() {
         </ThemedView> */}
 
           <View style={styles.sectionsWrapper}>
-            <Board />
+            <Board levelSettings={level_Settings}/>
           </View>
         </View>
       </ScrollView>
