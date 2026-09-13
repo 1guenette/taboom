@@ -1,4 +1,4 @@
-import { router, useLocalSearchParams } from "expo-router";
+import { Href, router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -91,7 +91,23 @@ interface BoxEntry {
     extension: "EXT",
   }
 
-export default function Board({levelSettings}) {
+  interface LevelSettings 
+    {
+    level: number,
+    durationSetting: number,
+    resetTimerSetting: boolean,
+    refillGridSetting: boolean,
+    colorBoxSetting: boolean,
+    textColorSetting: boolean,
+    gridLengthSetting: number,
+    bombSetting: boolean,
+    blendInSetting: boolean,
+    comboLength: number,
+  }
+  
+
+export default function Board({levelSettings, freePlay = false} : {levelSettings: LevelSettings,  freePlay: boolean}) 
+{
 
   
   //Explosion graphics variables
@@ -377,9 +393,10 @@ export default function Board({levelSettings}) {
           )
   }
   else if (levelWin){
+    const link: Href = freePlay ? '/game' : `/levels/${levelSettings.level+1}`
           return (<Pressable
           key="wnext-level-key"
-            onPress={()=>router.push(`/levels/${levelSettings.level+1}`)}
+            onPress={()=>router.push(link)}
             style={({ pressed }) => [
               styles.resetButton,
               pressed && styles.resetButtonPressed,
@@ -395,23 +412,21 @@ export default function Board({levelSettings}) {
 
 
   function displayLevel(){
-
-      return ( <Pressable
-            style={({ pressed }) => [
-              styles.resetButton,
-              pressed && styles.resetButtonPressed,
-            ]}
-          >
-            <Text style={styles.resetButtonText}>Level 1</Text>
-          </Pressable>)
+    console.log(freePlay)
+    if (!freePlay){
+      return <Text style={styles.status}>
+                    Level {levelSettings.level}
+                    </Text>
+    }
+    else{
+     return <Text style={styles.status}></Text>
+    }
   }
 
   return (
     <View style={styles.game}>
       <Animated.Text>
-                    <Text style={styles.status}>
-                    Level {levelSettings.level}
-                    </Text>
+                    {displayLevel()}
                  </Animated.Text>
       <View style={styles.boardPanel}>
         

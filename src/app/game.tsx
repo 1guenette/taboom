@@ -9,6 +9,19 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const BACK_BUTTON_SIZE = 44;
 
+interface LevelSettings 
+    {
+    level: number,
+    durationSetting: number,
+    resetTimerSetting: boolean,
+    refillGridSetting: boolean,
+    colorBoxSetting: boolean,
+    textColorSetting: boolean,
+    gridLengthSetting: number,
+    bombSetting: boolean,
+    blendInSetting: boolean,
+    comboLength: number,
+  }
 
 export default function Game() {
   // Tab screens stay mounted after a blur, so the board is torn down whenever
@@ -21,7 +34,7 @@ export default function Game() {
     bottom: safeAreaInsets.bottom + BottomTabInset + Spacing.three,
   };
 
-  const [levelSettings, setLevelSettings] = useState  ({
+  const [levelSettings, setLevelSettings] = useState <LevelSettings>({
     "level": 1,
     "durationSetting": 15000,
     "resetTimerSetting": true,
@@ -72,7 +85,7 @@ export default function Game() {
       <View style={[styles.contentContainer, contentPlatformStyle]}>
         <View style={styles.container}>
           <View style={styles.sectionsWrapper}>
-            <Board levelSettings={levelSettings} />
+            <Board levelSettings={levelSettings} freePlay={true}/>
           </View>
         </View>
       </View>
