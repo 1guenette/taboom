@@ -5,7 +5,7 @@ import { BottomTabInset, MaxContentWidth, Spacing, Surface } from '@/constants/t
 import { router, useIsFocused, useLocalSearchParams } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const BACK_BUTTON_SIZE = 44;
@@ -28,16 +28,17 @@ export default function Game() {
    
    const level_Settings = LEVELS_BETA[level-1] //-1 since level attribute starts at 1
 
+  // The back button floats over the content, so the top inset also has to clear it.
   const contentPlatformStyle = Platform.select({
-    android: {
-      paddingTop: insets.top,
-      paddingLeft: insets.left,
-      paddingRight: insets.right,
-      paddingBottom: insets.bottom,
-    },
     web: {
       paddingTop: Spacing.six,
       paddingBottom: Spacing.four,
+    },
+    default: {
+      paddingTop: insets.top + Spacing.two + BACK_BUTTON_SIZE,
+      paddingLeft: insets.left,
+      paddingRight: insets.right,
+      paddingBottom: insets.bottom,
     },
   });
 
@@ -62,20 +63,13 @@ export default function Game() {
           tintColor={Surface.text}
         />
       </Pressable>
-      <ScrollView
-        style={styles.scrollView}
-        contentInset={insets}
-        contentContainerStyle={[styles.contentContainer, contentPlatformStyle]}>
+      <View style={[styles.contentContainer, contentPlatformStyle]}>
         <View style={styles.container}>
-          {/* <ThemedView style={styles.titleContainer}>
-          <ThemedText type="subtitle">Game</ThemedText>
-        </ThemedView> */}
-
           <View style={styles.sectionsWrapper}>
             <Board levelSettings={level_Settings}/>
           </View>
         </View>
-      </ScrollView>
+      </View>
     </ScreenBackground>
   );
 }
@@ -96,17 +90,14 @@ const styles = StyleSheet.create({
   backButtonPressed: {
     opacity: 0.7,
   },
-  scrollView: {
-    flex: 1,
-    backgroundColor: 'transparent',
-  },
   contentContainer: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
   },
   container: {
+    flex: 1,
     maxWidth: MaxContentWidth,
-    flexGrow: 1,
   },
   titleContainer: {
     gap: Spacing.three,
@@ -130,6 +121,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sectionsWrapper: {
+    flex: 1,
     gap: Spacing.five,
     paddingHorizontal: Spacing.four,
     paddingTop: Spacing.three,

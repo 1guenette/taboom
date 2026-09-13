@@ -27,6 +27,7 @@ interface SquareProps {
   colorEnabled: boolean;
   textColorEnabled: boolean;
   blendInSetting: boolean;
+  size?: number;
 }
 
 
@@ -53,7 +54,7 @@ interface SquareProps {
   ];
   
 
-export default function Square({ value, onSquareClick, blast, colorEnabled, textColorEnabled, blendInSetting }: SquareProps) {
+export default function Square({ value, onSquareClick, blast, colorEnabled, textColorEnabled, blendInSetting, size = SQUARE_SIZE }: SquareProps) {
   const animatedStyle = blast ? blastAnimation(blast) : {};
 
   function displayBomb(value: BoxEntry){
@@ -64,14 +65,19 @@ export default function Square({ value, onSquareClick, blast, colorEnabled, text
     <Pressable onPress={onSquareClick} hitSlop={4}>
       {({ pressed }) => (
         <Animated.View style={[
-          styles.square, animatedStyle,
+          styles.square,
+          { width: size, height: size, borderRadius: size * 0.13 },
+          animatedStyle,
           colorEnabled && { backgroundColor: BUTTON_COLORS[value.boxColor] },
           pressed && styles.squarePressed
         ]}>
 
           <Text
+            adjustsFontSizeToFit
+            numberOfLines={1}
             style={[
               styles.squareText,
+              { fontSize: size * 0.47, lineHeight: size * 0.6 },
               textColorEnabled && {color: BUTTON_TEXT_COLORS[value.textColor]}
             ]}
           >
@@ -86,6 +92,7 @@ export default function Square({ value, onSquareClick, blast, colorEnabled, text
 }
 
 const SQUARE_SIZE = 76;
+export const SQUARE_MARGIN = 4;
 
 const styles = StyleSheet.create({
   game: {
@@ -126,7 +133,7 @@ const styles = StyleSheet.create({
   square: {
     backgroundColor: "#f4f6fb",
     borderRadius: 10,
-    margin: 4,
+    margin: SQUARE_MARGIN,
     height: SQUARE_SIZE,
     width: SQUARE_SIZE,
     alignItems: "center",

@@ -9,7 +9,7 @@ import {
   View,
 } from "react-native";
 import { makeConfetti, makeSquareBlasts, runBlastAnimations, runConfettiAnimations } from "../graphics/blastStyle";
-import Square from "./square";
+import Square, { SQUARE_MARGIN } from "./square";
 import Timer from "./timer";
 
 
@@ -127,6 +127,15 @@ export default function Board({levelSettings}) {
   //TODO settings
   const timerRef = useRef(null)  //Tracks timer component
  const [resetCount, setResetCount] = useState(0); //needed in key for fucking iOS compatibility 
+
+  // The grid is sized from the space the surrounding layout actually leaves for
+  // it, so the whole board fits on screen without scrolling on any device.
+  const [boardArea, setBoardArea] = useState({ width: 0, height: 0 });
+  const gridLength = levelSettings.gridLengthSetting;
+  const usable = Math.min(boardArea.width, boardArea.height) - BOARD_PADDING * 2;
+  const squareSize = usable > 0
+    ? Math.max(MIN_SQUARE_SIZE, Math.min(SQUARE_SIZE, Math.floor(usable / gridLength) - SQUARE_MARGIN * 2))
+    : 0;
 
 
   // Replaces the CSS `status-pulse` keyframe animation.
@@ -416,12 +425,20 @@ export default function Board({levelSettings}) {
           {displayWinSign()}
         </View>
 
+        <View
+          style={styles.boardArea}
+          onLayout={({ nativeEvent }) => {
+            const { width, height } = nativeEvent.layout;
+            setBoardArea((prev) =>
+              prev.width === width && prev.height === height ? prev : { width, height }
+            );
+          }}>
         <View style={styles.boardWrap}>
-          {
-          [...Array(levelSettings.gridLengthSetting).keys()].map((row) => (
+          {squareSize > 0 &&
+          [...Array(gridLength).keys()].map((row) => (
             <View style={styles.boardRow} key={row}>
-              {[...Array(levelSettings.gridLengthSetting).keys()].map((col) => {
-                const i = row * levelSettings.gridLengthSetting + col;
+              {[...Array(gridLength).keys()].map((col) => {
+                const i = row * gridLength + col;
                 return (
                   <Square
                     key={`${i}-${resetCount}`}
@@ -431,6 +448,7 @@ export default function Board({levelSettings}) {
                     colorEnabled={levelSettings.colorBoxSetting}
                     textColorEnabled={levelSettings.textColorSetting}
                     blendInSetting={levelSettings.blendInSetting}
+                    size={squareSize}
                   />
                 );
               })}
@@ -487,6 +505,7 @@ export default function Board({levelSettings}) {
             </View>
           )}
         </View>
+        </View>
 
         <View style={styles.buttonRow}>
           {displayReplay()}
@@ -525,20 +544,33 @@ export default function Board({levelSettings}) {
 }
 
 const SQUARE_SIZE = 76;
+const MIN_SQUARE_SIZE = 68;
+const BOARD_PADDING = 10;
 const TIMER_SLOT_HEIGHT = 28;
 const MESSAGE_SLOT_HEIGHT = 32;
 
 const styles = StyleSheet.create({
   game: {
+    flex: 1,
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 48,
-    paddingHorizontal: 40,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
     borderRadius: 20,
   },
   boardPanel: {
+    flex: 1,
+    width: "100%",
     alignItems: "center",
-    gap: 20,
+    justifyContent: "center",
+    gap: 12,
+  },
+  boardArea: {
+    flex: 1,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   status: {
     fontSize: 25,
@@ -564,7 +596,7 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 0 },
   },
   boardWrap: {
-    padding: 10,
+    padding: BOARD_PADDING,
     backgroundColor: "rgba(255, 255, 255, 0.04)",
     borderRadius: 16,
     // View is position:"relative" by default in RN, so the absolutely
@@ -606,6 +638,10 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     flexDirection: "row",
+    alignItems: "center",
+    // Reserved even while empty so the grid doesn't resize when the
+    // back/replay buttons appear at the end of a round.
+    minHeight: 44,
     gap: 12,
   },
   resetButton: {
