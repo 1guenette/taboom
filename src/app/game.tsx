@@ -28,6 +28,7 @@ export default function Game() {
   // the route loses focus and rebuilt from scratch on the next visit.
   
   const isFocused = useIsFocused();
+  const boolOptions = [true, false]
   const safeAreaInsets = useSafeAreaInsets();
   const insets = {
     ...safeAreaInsets,
@@ -38,12 +39,12 @@ export default function Game() {
     "level": 1,
     "durationSetting": 15000,
     "resetTimerSetting": true,
-    "refillGridSetting": true,
-    "colorBoxSetting": true,
-    "textColorSetting": true,
+    "refillGridSetting": boolOptions[Math.floor(Math.random()*2)],
+    "colorBoxSetting": boolOptions[Math.floor(Math.random()*2)],
+    "textColorSetting": boolOptions[Math.floor(Math.random()*2)] ,
     "gridLengthSetting": 3,
-    "bombSetting": true,
-    "blendInSetting": false,
+    "bombSetting": boolOptions[Math.floor(Math.random()*2)],
+    "blendInSetting": boolOptions[Math.floor(Math.random()*2)],
     "comboLength": 5,
   })
 
@@ -66,7 +67,7 @@ export default function Game() {
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Go back"
-        onPress={() =>  router.push("/explore")}
+        onPress={() =>  router.push("/")}
         style={({ pressed }) => [
           styles.backButton,
           {
