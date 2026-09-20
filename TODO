@@ -1,3 +1,8 @@
+Account:
+  -- Auth0
+  -- Level Security
+  -- Remote user database
+
 Level Logic
   -- Auth0 Security
  -- Storage
