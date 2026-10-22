@@ -1,18 +1,29 @@
+import { migrateDbIfNeeded } from '@/db/sql';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useColorScheme } from 'react-native';
-
+import { SQLiteProvider } from 'expo-sqlite';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="game" options={{ headerShown: false, presentation: 'card' }} />
-      <Stack.Screen name="levels/[id]" options={{ headerShown: false, presentation: 'card' }} />
+  // useEffect(() => {
+  //   // Hide the splash once the layout has mounted
+  //   SplashScreen.hideAsync();
+  // }, []);
 
-    </Stack>
+  return (
+    // <Suspense fallback={null}>
+      <SQLiteProvider
+        databaseName="test.db"
+        onInit={migrateDbIfNeeded}
+        // useSuspense
+      >
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="game" options={{ presentation: 'card' }} />
+          <Stack.Screen name="levels/[id]" options={{ presentation: 'card' }} />
+        </Stack>
+      </SQLiteProvider>
+    // </Suspense>
   );
 }

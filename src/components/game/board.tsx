@@ -1,3 +1,4 @@
+import { getAll } from '@/db/sql';
 import { Href, router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -155,7 +156,11 @@ export default function Board({levelSettings, freePlay = false} : {levelSettings
 
 
   // Replaces the CSS `status-pulse` keyframe animation.
-  useEffect(() => {
+  useEffect( () => {
+    console.log("======GET_ALL")
+    getAll().then((rows) => {
+      console.log("===-----")
+      console.log(rows)});
     const loop = Animated.loop(
       Animated.sequence([
         Animated.timing(pulseAnim, {

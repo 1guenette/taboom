@@ -57,3 +57,8 @@ Level Variables:
 
 ## Build web project
  npx expo export -p web
+
+
+ ## SQLITE
+ 
+ Find localhoust db source:  ```find ~/Library/Developer/CoreSimulator/Devices/ -name "*.db"```
