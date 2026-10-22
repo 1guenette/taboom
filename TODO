@@ -1,21 +1,18 @@
-Account:
-  -- Auth0
-  -- Level Security
-  -- Remote user database
-
-Level Logic
-  -- Auth0 Security
- -- Storage
- -- Level Display game
+DB setup
+Level generation logic
 Fix blendin setting (level 2)
 Points Logic
 CI/CD pipeline
-//-------
 Score sharing, game session
+//-------
 Accounts page
 Grid fill logic (singular number to find instead of whole combo)?
 
-Account Management
 Life bar?
 Make colorBlind boxes
 Add blend-in level???
+
+Account Management:
+  -- Auth0
+  -- Level Security
+  -- Remote user database
